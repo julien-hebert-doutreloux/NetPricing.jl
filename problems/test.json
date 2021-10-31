@@ -1,0 +1,16 @@
+{
+    "problem": {
+        "V": 2,
+        "A": [{
+            "src": 1,
+            "dst": 2,
+            "cost": 5.0,
+            "toll": true
+        }],
+        "K": [{
+            "orig": 1,
+            "dest": 2,
+            "demand": 1.0
+        }]
+    }
+}

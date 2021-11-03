@@ -9,6 +9,7 @@ using JuMP, Gurobi
 using DataStructures
 using GLMakie, GeometryBasics, Images
 using ProgressMeter, Distributed
+using BenchmarkTools, Random
 
 import Base.Iterators: flatten, product
 import GLMakie.Axis
@@ -30,11 +31,16 @@ include("plot-multi.jl")
 
 include("graphmodel.jl")
 include("fixedarcsolver.jl")
+include("enumeration.jl")
+
+include("benchmark.jl")
 
 export Problem, ProblemArc, Commodity
 export read_problem, tolled_arcs, tollfree_arcs
 
 export BBSession, step!, solve!, solve
 export plot2d
+
+export run_benchmark_fixedarcsolvers
 
 end # module

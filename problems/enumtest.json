@@ -1,0 +1,46 @@
+{
+    "problem": {
+        "V": 5,
+        "A": [{
+            "src": 1,
+            "dst": 2,
+            "cost": 1.0,
+            "toll": true
+        },{
+            "src": 2,
+            "dst": 3,
+            "cost": 1.0,
+            "toll": true
+        },{
+            "src": 3,
+            "dst": 5,
+            "cost": 1.0,
+            "toll": true
+        },{
+            "src": 3,
+            "dst": 4,
+            "cost": 2.0,
+            "toll": false
+        },{
+            "src": 4,
+            "dst": 5,
+            "cost": 2.0,
+            "toll": false
+        },{
+            "src": 1,
+            "dst": 5,
+            "cost": 10.0,
+            "toll": false
+        },{
+            "src": 2,
+            "dst": 5,
+            "cost": 3.0,
+            "toll": false
+        }],
+        "K": [{
+            "orig": 1,
+            "dest": 5,
+            "demand": 1.0
+        }]
+    }
+}

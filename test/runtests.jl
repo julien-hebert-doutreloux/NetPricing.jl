@@ -1,10 +1,9 @@
 using Test
 using NetPricingTollBranch
-using BenchmarkTools
 using Random
 
 @testset "Shortest path fixed arcs comparison" begin
-    prob = read_problem("../problems/d30-01.json")
+    prob = read_problem("../problems/paper/d30-01.json")
     graph = NetPricingTollBranch.build_graph(prob)
     graphmodel = NetPricingTollBranch.make_graph_model(prob)
     a1 = tolled_arcs(prob)
@@ -16,7 +15,7 @@ using Random
         return comm.orig, comm.dest, fixed1, fixed0
     end
 
-    @testset "Accuracy tests" begin
+    @testset "Accuracy test" begin
         for t in 1:100
             o, d, f1, f0 = setupfunc(20)
             cHungarian = NetPricingTollBranch.solve_fixedarcs_hungarian(graph, o, d, prob, f1, f0)
@@ -24,12 +23,13 @@ using Random
             @test cHungarian ≈ cGurobi
         end
     end
-    
-    @testset "Benchmark" begin
-        for nfixed1 in [1, 2, 3, 5, 7, 10, 15, 20, 30, 50]
-            tHungarian = @benchmark NetPricingTollBranch.solve_fixedarcs_hungarian($graph, d[1], d[2], $prob, d[3], d[4]) setup=(d = $setupfunc($nfixed1)) evals=1
-            tGurobi = @benchmark NetPricingTollBranch.solve_fixedarcs_gurobi($graphmodel, d[1], d[2], d[3], d[4]) setup=(d = $setupfunc($nfixed1)) evals=1
-            println("Fix $nfixed1:    ", median(tHungarian), "    ", judge(median(tHungarian), median(tGurobi)))
+
+    @testset "Relaxation test" begin
+        for t in 1:100
+            o, d, f1, f0 = setupfunc(20)
+            cNormal = NetPricingTollBranch.solve_fixedarcs_hungarian(graph, o, d, prob, f1, f0, relaxed=false)
+            cRelaxed = NetPricingTollBranch.solve_fixedarcs_hungarian(graph, o, d, prob, f1, f0, relaxed=true)
+            @test cRelaxed <= cNormal
         end
     end
 end

@@ -26,32 +26,22 @@ function reset!(graph::AbstractGraph, prob::Problem)
     return graph
 end
 
-function restore!(graph::AbstractGraph, prob::Problem, arcs)
-    for arc in prob.A[arcs]
-        add_edge!(graph, arc.src, arc.dst, arc.cost + eps(0.0))
-    end
-    return graph
+function restore!(graph::AbstractGraph, weights)
+    @inbounds graph.weights = copy(weights)
 end
 
 function disable_arcs!(graph::AbstractGraph, prob::Problem, arcs::Vector{Int})
-    for arc in prob.A[arcs]
-        add_edge!(graph, arc.src, arc.dst, Inf)
+    for arc in @view prob.A[arcs]
+        @inbounds graph.weights[arc.dst, arc.src] = Inf
     end
-    return arcs
 end
 
-function disable_nodes!(graph::AbstractGraph, prob::Problem, nodes::Vector{Int})
+function disable_nodes!(graph::AbstractGraph, nodes::Vector{Int})
     for i in nodes
-        # for j in inneighbors(graph, i)
-        #     add_edge!(graph, j, i, Inf)
-        # end
         for j in outneighbors(graph, i)
-            add_edge!(graph, i, j, Inf)
+            @inbounds graph.weights[j, i] = Inf
         end
     end
-    nodeset = BitSet(nodes)
-    arcs = [i for (i, a) in enumerate(prob.A) if a.src in nodeset]
-    return arcs
 end
 
 ## Find the shortest path

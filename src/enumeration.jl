@@ -29,6 +29,7 @@ function enumerate_bilevel_feasible(graph::AbstractGraph, orig, dest, prob, nump
     prune1=true)    # Prune rule 1: if the spur part is toll-free, any subsequent path is dominated if it is longer
 
     reset!(graph, prob)
+    init_ws = copy(graph.weights)
 
     # First shortest path
     spath, scost = shortest_path(graph, orig, dest)
@@ -75,15 +76,14 @@ function enumerate_bilevel_feasible(graph::AbstractGraph, orig, dest, prob, nump
         for a in tolledlist
             spurnodeidx = findfirst(isequal(spurnode), path)
             rootpart = path[1:(spurnodeidx-1)]
-            newexcluded = vcat(excluded, a)
+            newexcluded = [excluded; a]
 
-            disabled = Int[]
-            append!(disabled, disable_nodes!(graph, prob, rootpart))
-            append!(disabled, disable_arcs!(graph, prob, newexcluded))
+            disable_nodes!(graph, rootpart)
+            disable_arcs!(graph, prob, newexcluded)
 
             spurpart, spurcost = shortest_path(graph, spurnode, dest)
             
-            restore!(graph, prob, disabled)
+            restore!(graph, init_ws)
 
             if spurcost != Inf
                 # Add the cost of the root part and end part
@@ -103,8 +103,6 @@ function enumerate_bilevel_feasible(graph::AbstractGraph, orig, dest, prob, nump
                     isempty(spurtolledlist) && (upperbound = min(upperbound, spurcost))
                 end
             end
-
-            restore!(graph, prob, disabled)
 
             spurnode = prob.A[a].dst
         end

@@ -16,14 +16,6 @@ function get_tolled_list(path, tolledindices)
     return tolledlist
 end
 
-function get_path_cost(path, arccosts; rev=false)
-    cost = 0.0
-    for i in 1:(length(path)-1)
-        cost += arccosts[rev ? (path[i+1], path[i]) : (path[i], path[i+1])]
-    end
-    return cost
-end
-
 function enumerate_bilevel_feasible(graph::AbstractGraph, orig, dest, prob, numpaths;
     purge=true,     # Purge all non-bilevel-feasible paths (quadratic time)
     prune1=true)    # Prune rule 1: if the spur part is toll-free, any subsequent path is dominated if it is longer

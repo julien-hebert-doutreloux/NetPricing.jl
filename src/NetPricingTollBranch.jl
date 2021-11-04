@@ -45,7 +45,7 @@ include("benchmark.jl")
 
 export AbstractProblem, Problem, PreprocessedProblem, ProblemArc, Commodity
 export read_problem, nodes, arcs, tolled_arcs, tollfree_arcs, srcdst_to_index, srcdst_to_cost, tolled_srcdst_to_index
-export build_graph, shortest_path
+export build_graph, shortest_path, get_path_cost
 export enumerate_bilevel_feasible
 export preprocess_path, preprocess_spgm
 

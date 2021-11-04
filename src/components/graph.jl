@@ -74,3 +74,13 @@ function shortest_path(graph::AbstractGraph, orig, dest)
 
     return reverse!(path), dists[dest]
 end
+
+# Get path cost
+function get_path_cost(path, arccosts)
+    cost = 0.0
+    for i in 1:(length(path)-1)
+        cost += arccosts[(path[i], path[i+1])]
+    end
+    return cost
+end
+get_path_cost(path, prob::AbstractProblem) = get_path_cost(path, srcdst_to_cost(prob))

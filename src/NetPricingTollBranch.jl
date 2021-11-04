@@ -28,7 +28,8 @@ include("components/model-components.jl")
 include("components/graphmodel.jl")
 include("components/fixedarcsolver.jl")
 include("components/enumeration.jl")
-include("components/preprocessing.jl")
+include("components/preprocessing-path.jl")
+include("components/preprocessing-spgm.jl")
 
 # include("legacy/exactmodel.jl")
 # include("legacy/upperbound.jl")
@@ -46,7 +47,7 @@ export AbstractProblem, Problem, PreprocessedProblem, ProblemArc, Commodity
 export read_problem, nodes, arcs, tolled_arcs, tollfree_arcs, srcdst_to_index, srcdst_to_cost, tolled_srcdst_to_index
 export build_graph, shortest_path
 export enumerate_bilevel_feasible
-export preprocess_path
+export preprocess_path, preprocess_spgm
 
 # export BBSession, step!, solve!, solve
 # export plot2d

@@ -20,7 +20,7 @@ arcs(preprob::PreprocessedProblem) = preprob.A
 function revmap(map::AbstractVector{Int}, maxlength::Int)
     rmap = zeros(Int, maxlength)
     for (i, v) in enumerate(map)
-        rmap[v] = i
+        (v in 1:maxlength) && (rmap[v] = i)
     end
     return rmap
 end
@@ -28,5 +28,5 @@ end
 ## Pretty print
 function Base.show(io::IO, preprob::PreprocessedProblem)
     a1 = length(tolled_arcs(preprob))
-    print(io, "PreprocessedProblcomem for k = $(preprob.k) with {$(preprob.V) nodes, $(length(preprob.A)) arcs ($a1 tolled)}")
+    print(io, "PreprocessedProblem for k = $(preprob.k) with {$(preprob.V) nodes, $(length(preprob.A)) arcs ($a1 tolled)}")
 end

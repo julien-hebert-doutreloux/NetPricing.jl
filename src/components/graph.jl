@@ -1,26 +1,13 @@
 ## Build graph from problem
-function build_graph(prob::Problem)
-    g = SimpleWeightedDiGraph(prob.V)
+function build_graph(prob::AbstractProblem)
+    g = SimpleWeightedDiGraph(nodes(prob))
     reset!(g, prob)
     return g
 end
 
-## Set tolls to graph
-function set_tolls!(graph::AbstractGraph, prob::Problem, tolls::AbstractTollsDict)
-    for (index, toll) in tolls
-        arc = prob.A[index]
-        arc.toll || throw(ErrorException("Arc $index is not a tolled arc"))
-
-        add_edge!(graph, arc.src, arc.dst, arc.cost + toll + eps(0.0))
-    end
-    return graph
-end
-
-reset_tolls!(graph::AbstractGraph, prob::Problem) = set_tolls!(graph, prob, zero_tolls(prob))
-
-# Enable/disable arcs/nodes
-function reset!(graph::AbstractGraph, prob::Problem)
-    for arc in prob.A
+## Enable/disable arcs/nodes
+function reset!(graph::AbstractGraph, prob::AbstractProblem)
+    for arc in arcs(prob)
         add_edge!(graph, arc.src, arc.dst, arc.cost + eps(0.0))
     end
     return graph
@@ -30,8 +17,8 @@ function restore!(graph::AbstractGraph, weights)
     @inbounds graph.weights = copy(weights)
 end
 
-function disable_arcs!(graph::AbstractGraph, prob::Problem, arcs::Vector{Int})
-    for arc in @view prob.A[arcs]
+function disable_arcs!(graph::AbstractGraph, prob::AbstractProblem, _arcs::Vector{Int})
+    for arc in @view arcs(prob)[_arcs]
         @inbounds graph.weights[arc.dst, arc.src] = Inf
     end
 end

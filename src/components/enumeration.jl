@@ -36,8 +36,8 @@ function enumerate_bilevel_feasible(graph::AbstractGraph, orig, dest, prob, nump
     queue = PriorityQueue(BFEnumPathInfo(spath, scost, orig, []) => scost)
     bfpaths = Vector{Int}[]
 
-    tolledindices = Dict((a.src, a.dst) => i for (i, a) in enumerate(prob.A) if a.toll)
-    arccosts = Dict((a.src, a.dst) => a.cost for a in prob.A)
+    tolledindices = tolled_srcdst_to_index(prob)
+    arccosts = srcdst_to_cost(prob)
 
     purgelist = BitSet[]
 

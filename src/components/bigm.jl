@@ -9,14 +9,14 @@ function calculate_bigM(prob::Problem; graph = build_graph(prob))
     dmin = zeros(nk, nv)
     dmax = zeros(nk, nv)
 
-    set_tolls!(graph, prob, zero_tolls(prob))
+    reset_tolls!(graph, prob)
     for k = 1:nk, v = 1:nv
         comm = prob.K[k]
         omin[k, v] = shortest_path(graph, comm.orig, v)[2]
         dmin[k, v] = shortest_path(graph, v, comm.dest)[2]
     end
 
-    set_tolls!(graph, prob, inf_tolls(prob))
+    disable_tolls!(graph, prob)
     for k = 1:nk, v = 1:nv
         comm = prob.K[k]
         omax[k, v] = shortest_path(graph, comm.orig, v)[2]

@@ -1,22 +1,19 @@
 ## Structs
-struct ProblemArc
-    src::Int
-    dst::Int
-    cost::Float64
-    toll::Bool
-end
-
 struct Commodity
     orig::Int
     dest::Int
     demand::Float64
 end
 
-struct Problem
+struct Problem <: AbstractProblem
     V::Int
     A::Vector{ProblemArc}
     K::Vector{Commodity}
 end
+
+## Interfaces
+nodes(prob::Problem) = prob.V
+arcs(prob::Problem) = prob.A
 
 ## Write to file
 function Base.write(filename::AbstractString, prob::Problem)
@@ -35,15 +32,8 @@ function read_problem(filename::AbstractString)
     return prob
 end
 
-## Queries
-tolled_arcs(prob::Problem) = [i for i in 1:length(prob.A) if prob.A[i].toll]
-tollfree_arcs(prob::Problem) = [i for i in 1:length(prob.A) if !prob.A[i].toll]
-
 ## Sub-problem by commodity
 subproblem_by_commodity(prob::Problem, k::Int) = Problem(prob.V, prob.A, [prob.K[k]])
-
-## Dicts
-srcdst_to_index(prob::Problem) = Dict((a.src, a.dst) => i for (i, a) in enumerate(prob.A))
 
 ## Pretty print
 function Base.show(io::IO, prob::Problem)

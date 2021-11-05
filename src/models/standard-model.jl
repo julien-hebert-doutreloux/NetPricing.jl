@@ -1,26 +1,41 @@
-macro makerefs(model, args...)
+const _standard_model_refs = [
+    :x,
+    :λ,
+    :tx,
+    :primalfeas,
+    :dualfeas,
+    :strongdual,
+    :bilinear1,
+    :bilinear2,
+    :bilinear3,
+    :bilinear4,
+    :primalobj,
+    :dualobj
+]
+
+macro makerefs(model)
     model = esc(model)
     ex = Expr(:block)
-    ex.args = [:($model[$(Meta.quot(arg))] = []) for arg in args]
+    ex.args = [:($model[$(Meta.quot(arg))] = []) for arg in _standard_model_refs]
     return ex
 end
 
-macro pushrefs(model, args...)
+macro pushrefs(model)
     model = esc(model)
     ex = Expr(:block)
-    ex.args = [:(push!($model[$(Meta.quot(arg))], $(esc(arg)))) for arg in args]
+    ex.args = [:(push!($model[$(Meta.quot(arg))], $(esc(arg)))) for arg in _standard_model_refs]
     return ex
 end
 
-macro pushemptyrefs(model, args...)
+macro pushemptyrefs(model)
     model = esc(model)
     ex = Expr(:block)
-    ex.args = [:(push!($model[$(Meta.quot(arg))], [])) for arg in args]
+    ex.args = [:(push!($model[$(Meta.quot(arg))], [])) for arg in _standard_model_refs]
     return ex
 end
 
 ## Model for commodity
-function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N; sdtol=1e-10)
+function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N; sdtol=1e-10, linearize=true)
     nv = nodes(prob)
     na = length(arcs(prob))
     a1 = tolled_arcs(prob)
@@ -34,8 +49,10 @@ function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N;
     # Variables
     x = @variable(model, [a=1:na], lower_bound = 0, upper_bound = 1, binary = a in a1, base_name="x[$k]")
     λ = @variable(model, [i=1:nv], base_name="λ[$k]")
-    tx = @variable(model, [a=a1], lower_bound = 0, base_name="tx[$k]")
+    tx = linearize ? @variable(model, [a=a1], lower_bound = 0, base_name="tx[$k]") : []
     t = JuMP.Containers.DenseAxisArray(model[:t][Amap[a1]].data, a1)
+
+    sumtx = linearize ? sum(tx) : sum(t .* x[a1])
 
     a1dict = Dict(a => i for (i, a) in enumerate(tolled_arcs(parent(prob))))
     mapped_a1 = [a1dict[a] for a in Amap[a1]]
@@ -48,55 +65,58 @@ function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N;
         tfull[a] = t[a]
     end
     
-    primalobj = c' * x + sum(tx)
+    primalobj = c' * x + sumtx
     dualobj = b' * λ
 
     # Objective
-    set_objective_coefficient.(model, tx, demand(prob))
+    @objective(model, Max, objective_function(model) + demand(prob) * sumtx)
 
     # Constraints
     primalfeas = @constraint(model, A * x .== b)
     dualfeas = @constraint(model, A' * λ .≤ c + tfull)
     strongdual = @constraint(model, primalobj ≤ dualobj + sdtol)
-    bilinear1 = @constraint(model, tx .≥ 0)
-    bilinear2 = @constraint(model, tx .≤ M .* x[a1])
-    bilinear3 = @constraint(model, t .- tx .≥ 0)
-    bilinear4 = @constraint(model, t .- tx .≤ N .* (1 .- x[a1]))
+
+    bilinear1 = linearize ? @constraint(model, tx .≥ 0) : []
+    bilinear2 = linearize ? @constraint(model, tx .≤ M .* x[a1]) : []
+    bilinear3 = linearize ? @constraint(model, t .- tx .≥ 0) : []
+    bilinear4 = linearize ? @constraint(model, t .- tx .≤ N .* (1 .- x[a1])) : []
     
     # References
-    @pushrefs model x λ tx primalfeas dualfeas strongdual bilinear1 bilinear2 bilinear3 bilinear4 primalobj dualobj
+    @pushrefs model 
 
     return model
 end
 
-function add_standard_model!(model::Model, ::EmptyProblem, M, N; sdtol=1e-10)
-    @pushemptyrefs model x λ tx primalfeas dualfeas strongdual bilinear1 bilinear2 bilinear3 bilinear4 primalobj dualobj
+function add_standard_model!(model::Model, ::EmptyProblem, M, N; kwargs...)
+    @pushemptyrefs model
     return model
 end
 
 ## Build model
-function standard_model(prob::Problem; sdtol=1e-10, silent=false, threads=nothing, maxpaths=1000)
+function standard_model(probs::Vector{<:AbstractCommodityProblem}; silent=false, threads=nothing, kwargs...)
     model = Model(() -> Gurobi.Optimizer(current_env()))
     set_optimizer_attribute(model, MOI.Silent(), silent)
     set_optimizer_attribute(model, MOI.NumberOfThreads(), threads)
 
-    # Preprocess
-    pprobs = preprocess(prob, maxpaths=maxpaths)
-
     # Big M
-    M, N = calculate_bigM(prob)
+    parentprob = parent(probs[1])
+    M, N = calculate_bigM(parentprob)
 
-    a1 = tolled_arcs(prob)
-    @variable(model, t[a=a1] ≥ 0)
+    a1 = tolled_arcs(parentprob)
+    a1dict = Dict(a => i for (i, a) in enumerate(a1))
+
+    @variable(model, 0 ≤ t[a=a1], upper_bound = N[a1dict[a]])
     @objective(model, Max, 0)
 
     # References
-    @makerefs model x λ tx primalfeas dualfeas strongdual bilinear1 bilinear2 bilinear3 bilinear4 primalobj dualobj
+    @makerefs model
 
     # Add commodity
-    for pprob in pprobs
-        add_standard_model!(model, pprob, @view(M[index(pprob),:]), N, sdtol=sdtol)
+    for pprob in probs
+        add_standard_model!(model, pprob, @view(M[index(pprob),:]), N; kwargs...)
     end
     
     return model
 end
+
+standard_model(prob::Problem; maxpaths=1000, kwargs...) = standard_model([preprocess(prob, k, maxpaths=maxpaths) for k in 1:length(prob.K)]; kwargs...)

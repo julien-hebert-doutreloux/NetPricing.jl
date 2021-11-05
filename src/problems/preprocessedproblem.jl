@@ -1,5 +1,5 @@
 ## Structs
-struct PreprocessedProblem <: AbstractProblem
+struct PreprocessedProblem <: AbstractCommodityProblem
     problem::Problem
     V::Int
     A::Vector{ProblemArc}
@@ -16,6 +16,13 @@ end
 nodes(preprob::PreprocessedProblem) = preprob.V
 arcs(preprob::PreprocessedProblem) = preprob.A
 
+Base.parent(prob::PreprocessedProblem) = prob.problem
+index(prob::PreprocessedProblem) = prob.k
+orig(prob::PreprocessedProblem) = prob.orig
+dest(prob::PreprocessedProblem) = prob.dest
+
+arcmap(prob::PreprocessedProblem) = prob.Amap
+
 ## Reversed map
 function revmap(map::AbstractVector{Int}, maxlength::Int)
     rmap = zeros(Int, maxlength)
@@ -28,5 +35,5 @@ end
 ## Pretty print
 function Base.show(io::IO, preprob::PreprocessedProblem)
     a1 = length(tolled_arcs(preprob))
-    print(io, "PreprocessedProblem for k = $(preprob.k) with {$(preprob.V) nodes, $(length(preprob.A)) arcs ($a1 tolled)}")
+    print(io, "Processed problem for k = $(preprob.k) with {$(preprob.V) nodes, $(length(preprob.A)) arcs ($a1 tolled)}")
 end

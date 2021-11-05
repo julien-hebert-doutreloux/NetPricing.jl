@@ -1,5 +1,5 @@
 ## Build model
-function make_exact_model(prob::Problem; sdtol=1e-10, silent=true, bigM=100)
+function make_exact_model(prob::Problem; sdtol=1e-10, silent=true, bigM=1000)
     model = Model(() -> Gurobi.Optimizer(current_env()))
     set_optimizer_attribute(model, MOI.Silent(), silent)
     

@@ -1,4 +1,4 @@
-Base.reverse(graph::SimpleWeightedDiGraph) = SimpleWeightedDiGraph(sparse(transpose(graph.weights)))
+Base.reverse(graph::SimpleWeightedDiGraph) = SimpleWeightedDiGraph(sparse(graph.weights))
 
 function preprocess_spgm(prob::Problem, k; graph = build_graph(prob))
     comm = prob.K[k]

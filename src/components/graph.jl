@@ -17,13 +17,13 @@ function restore!(graph::AbstractGraph, weights)
     @inbounds graph.weights = copy(weights)
 end
 
-function disable_arcs!(graph::AbstractGraph, prob::AbstractProblem, _arcs::Vector{Int})
+function disable_arcs!(graph::AbstractGraph, prob::AbstractProblem, _arcs)
     for arc in @view arcs(prob)[_arcs]
         @inbounds graph.weights[arc.dst, arc.src] = Inf
     end
 end
 
-function disable_nodes!(graph::AbstractGraph, nodes::Vector{Int})
+function disable_nodes!(graph::AbstractGraph, nodes)
     for i in nodes
         for j in outneighbors(graph, i)
             @inbounds graph.weights[j, i] = Inf
@@ -39,6 +39,10 @@ function shortest_path_old(graph::AbstractGraph, orig, dest)
 end
 
 function shortest_path(graph::AbstractGraph, orig, dest)
+    if orig == dest
+        return Int[], 0.0
+    end
+
     dists = fill(Inf, nv(graph))
     parents = zeros(Int, nv(graph))
 

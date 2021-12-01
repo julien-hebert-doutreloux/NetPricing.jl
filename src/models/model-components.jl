@@ -13,7 +13,7 @@ end
 
 # Source-sink vector
 function sourcesink_vector(prob::AbstractProblem, o, d)
-    b = spzeros(Int, nodes(prob))
+    b = zeros(Int, nodes(prob))
     b[o] = 1
     b[d] = -1
     return b

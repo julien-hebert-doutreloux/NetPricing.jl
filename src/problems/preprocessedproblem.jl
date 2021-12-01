@@ -21,6 +21,9 @@ index(prob::PreprocessedProblem) = prob.k
 orig(prob::PreprocessedProblem) = prob.orig
 dest(prob::PreprocessedProblem) = prob.dest
 
+used_nodes(prob::PreprocessedProblem) = prob.Vmap
+used_arcs(prob::PreprocessedProblem) = prob.Amap
+
 arcmap(prob::PreprocessedProblem) = prob.Amap
 
 ## Reversed map

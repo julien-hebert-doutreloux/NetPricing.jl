@@ -1,6 +1,6 @@
 module NetPricingTollBranch
 
-using Printf
+using Printf, Crayons, Crayons.Box
 using JSON, Unmarshal
 using Graphs, SimpleWeightedGraphs
 using SparseArrays
@@ -31,17 +31,14 @@ include("components/smallm.jl")
 include("components/enumeration.jl")
 include("components/preprocessing-path.jl")
 include("components/preprocessing-spgm.jl")
+include("components/preprocessing-light.jl")
 include("components/preprocessing.jl")
 
 include("models/model-components.jl")
 include("models/standard-model.jl")
 
-# include("legacy/exactmodel.jl")
-# include("legacy/upperbound.jl")
-# include("legacy/lowerbound.jl")
-# include("legacy/session.jl")
-# include("legacy/logging.jl")
-# include("legacy/branchandbound.jl")
+include("adaptive/adaptive-info.jl")
+include("adaptive/adaptive-model.jl")
 
 # include("plots/plot.jl")
 # include("plots/plot-multi.jl")
@@ -55,7 +52,8 @@ export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
 export standard_model
 
-# export BBSession, step!, solve!, solve
+export adaptive_model, step_adaptive!, optimize_adaptive!
+
 # export plot2d
 
 export run_benchmark_fixedarcsolvers, run_benchmark_shortest_path, run_benchmark_enumeration

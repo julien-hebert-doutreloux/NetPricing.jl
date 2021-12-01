@@ -1,0 +1,41 @@
+{
+    "problem": {
+        "V": 4,
+        "A": [{
+            "src": 1,
+            "dst": 2,
+            "cost": 5.0,
+            "toll": false
+        }, {
+            "src": 1,
+            "dst": 3,
+            "cost": 1.0,
+            "toll": false
+        }, {
+            "src": 2,
+            "dst": 4,
+            "cost": 1.0,
+            "toll": true
+        }, {
+            "src": 3,
+            "dst": 4,
+            "cost": 8.0,
+            "toll": true
+        }, {
+            "src": 3,
+            "dst": 2,
+            "cost": 1.0,
+            "toll": false
+        }, {
+            "src": 1,
+            "dst": 4,
+            "cost": 10.0,
+            "toll": false
+        }],
+        "K": [{
+            "orig": 1,
+            "dest": 4,
+            "demand": 1.0
+        }]
+    }
+}

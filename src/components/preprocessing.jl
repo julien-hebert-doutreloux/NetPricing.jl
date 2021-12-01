@@ -1,10 +1,15 @@
-function preprocess(prob::Problem, k; graph = build_graph(prob), maxpaths=1000)
+function preprocess(prob::Problem, k;
+    graph = build_graph(prob),
+    maxpaths=1000,
+    noempty=false,
+    nospgm=false,
+    )
     comm = prob.K[k]
     bfpaths = enumerate_bilevel_feasible(graph, comm.orig, comm.dest, prob, maxpaths + 1)
-    if length(bfpaths) == 1
+    if length(bfpaths) == 1 && !noempty
         return EmptyProblem(prob, k)
     elseif length(bfpaths) > maxpaths
-        return preprocess_spgm(prob, k, graph=graph)
+        return nospgm ? preprocess_light(prob, k) : preprocess_spgm(prob, k)
     else
         return preprocess_path(prob, k, bfpaths)
     end

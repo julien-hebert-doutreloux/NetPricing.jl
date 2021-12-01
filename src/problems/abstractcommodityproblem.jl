@@ -26,11 +26,15 @@ nodes(::EmptyProblem) = 0
 arcs(::EmptyProblem) = ProblemArc[]
 Base.parent(prob::EmptyProblem) = prob.problem
 index(prob::EmptyProblem) = prob.k
+used_nodes(::EmptyProblem) = Int[]
+used_arcs(::EmptyProblem) = Int[]
 
 nodes(prob::UnprocessedProblem) = prob.problem.V
 arcs(prob::UnprocessedProblem) = prob.problem.A
 Base.parent(prob::UnprocessedProblem) = prob.problem
 index(prob::UnprocessedProblem) = prob.k
+used_nodes(prob::UnprocessedProblem) = collect(1:nodes(prob))
+used_arcs(prob::UnprocessedProblem) = collect(1:length(arcs(prob)))
 
 ## Pretty print
 function Base.show(io::IO, prob::EmptyProblem)

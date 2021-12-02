@@ -2,15 +2,17 @@
 function adaptive_model(prob::Problem;
     silent=false,
     threads=nothing,
+    timelimit=nothing,
     sdtol=1e-10,
     nonadaptive=false,
     dualanchor=true,
     preprocess=nothing)
 
-    model = Model(() -> Gurobi.Optimizer(current_env()))
-    # model = direct_model(Gurobi.Optimizer(current_env()))
+    # model = Model(() -> Gurobi.Optimizer(current_env()))
+    model = direct_model(Gurobi.Optimizer(current_env()))
     set_optimizer_attribute(model, MOI.Silent(), silent)
     set_optimizer_attribute(model, MOI.NumberOfThreads(), threads)
+    set_optimizer_attribute(model, MOI.TimeLimitSec(), timelimit)
     if !nonadaptive
         set_optimizer_attribute(model, "LazyConstraints", 1)
         set_optimizer_attribute(model, "Heuristics", 0)         # Turn off to avoid unnecessary graph expansion

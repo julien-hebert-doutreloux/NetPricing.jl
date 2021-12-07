@@ -118,9 +118,6 @@ function adaptive_model(prob::Problem;
     return model
 end
 
-# Fix var
-fix_var(var::VariableRef) = fix(var, 0, force=true)
-
 # Lazy constraint routine
 function adaptive_lazy_routine(model; sdtol=1e-10)
     prob = model[:prob]

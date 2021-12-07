@@ -10,8 +10,7 @@ const _standard_model_refs = [
     :bilinear3,
     :bilinear4,
     :primalobj,
-    :dualobj,
-    :order1cuts
+    :dualobj
 ]
 
 macro makerefs(model)
@@ -36,7 +35,7 @@ macro pushemptyrefs(model)
 end
 
 ## Model for commodity
-function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N; sdtol=1e-10, linearize=true, order1=false)
+function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N; sdtol=1e-10, linearize=true, dualanchor=true)
     nv = nodes(prob)
     na = length(arcs(prob))
     a1 = tolled_arcs(prob)
@@ -82,7 +81,10 @@ function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N;
     bilinear3 = linearize ? @constraint(model, t .- tx .≥ 0) : []
     bilinear4 = linearize ? @constraint(model, t .- tx .≤ N .* (1 .- x[a1])) : []
 
-    order1cuts = order1 ? @constraint(model, t .≤ N .+ (M .- N) .* x[a1]) : []
+    # Dual anchor
+    if dualanchor
+        fix_var(λ[dest(prob)])
+    end
     
     # References
     @pushrefs model 

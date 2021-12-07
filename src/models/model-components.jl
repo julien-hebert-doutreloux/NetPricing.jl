@@ -29,3 +29,6 @@ demand_vector(prob::Problem) = [comm.demand for comm in prob.K]
 # Query
 value_x(model) = value.(model[:x])
 value_t(model) = value.(model[:t])
+
+# Fix var
+fix_var(var::VariableRef) = fix(var, 0, force=true)

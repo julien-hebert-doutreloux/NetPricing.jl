@@ -13,27 +13,6 @@ const _standard_model_refs = [
     :dualobj
 ]
 
-macro makerefs(model)
-    model = esc(model)
-    ex = Expr(:block)
-    ex.args = [:($model[$(Meta.quot(arg))] = []) for arg in _standard_model_refs]
-    return ex
-end
-
-macro pushrefs(model)
-    model = esc(model)
-    ex = Expr(:block)
-    ex.args = [:(push!($model[$(Meta.quot(arg))], $(esc(arg)))) for arg in _standard_model_refs]
-    return ex
-end
-
-macro pushemptyrefs(model)
-    model = esc(model)
-    ex = Expr(:block)
-    ex.args = [:(push!($model[$(Meta.quot(arg))], [])) for arg in _standard_model_refs]
-    return ex
-end
-
 ## Model for commodity
 function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N; sdtol=1e-10, linearize=true, dualanchor=true)
     nv = nodes(prob)
@@ -87,13 +66,13 @@ function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N;
     end
     
     # References
-    @pushrefs model 
+    @pushrefs model _standard_model_refs
 
     return model
 end
 
 function add_standard_model!(model::Model, ::EmptyProblem, M, N; kwargs...)
-    @pushemptyrefs model
+    @pushemptyrefs model _standard_model_refs
     return model
 end
 
@@ -114,7 +93,7 @@ function standard_model(probs::Vector{<:AbstractCommodityProblem}; silent=false,
     @objective(model, Max, 0)
 
     # References
-    @makerefs model
+    @makerefs model _standard_model_refs
 
     # Add commodity
     for pprob in probs

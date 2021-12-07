@@ -35,6 +35,7 @@ include("components/preprocessing-light.jl")
 include("components/preprocessing.jl")
 
 include("models/model-components.jl")
+include("models/refs-macros.jl")
 include("models/standard-model.jl")
 
 include("adaptive/adaptive-info.jl")

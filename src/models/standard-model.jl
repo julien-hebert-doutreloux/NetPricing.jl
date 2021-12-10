@@ -14,7 +14,13 @@ const _standard_model_refs = [
 ]
 
 ## Model for commodity
-function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N; sdtol=1e-10, linearize=true, dualanchor=true)
+function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N;
+    sdtol=1e-10,            # Strong duality tolerance
+    linearize=true,         # Enabling linearization
+    dualanchor=true,        # Fix λ_d to 0
+    dualbound=true,         # Add lower bound to λ
+    )
+
     nv = nodes(prob)
     na = length(arcs(prob))
     a1 = tolled_arcs(prob)
@@ -59,6 +65,11 @@ function add_standard_model!(model::Model, prob::AbstractCommodityProblem, M, N;
     bilinear2 = linearize ? @constraint(model, tx .≤ M .* x[a1]) : []
     bilinear3 = linearize ? @constraint(model, t .- tx .≥ 0) : []
     bilinear4 = linearize ? @constraint(model, t .- tx .≤ N .* (1 .- x[a1])) : []
+
+    # Dual bounds
+    if dualbound
+        set_lower_bound.(λ, 0)
+    end
 
     # Dual anchor
     if dualanchor

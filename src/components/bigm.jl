@@ -10,19 +10,17 @@ function calculate_bigM(prob::Problem; graph = build_graph(prob))
     dmax = zeros(nk, nv)
 
     reset_tolls!(graph, prob)
-    revgraph = reverse(graph)
     for k = 1:nk
         comm = prob.K[k]
-        omin[k, :] = dijkstra_shortest_paths(graph, comm.orig).dists
-        dmin[k, :] = dijkstra_shortest_paths(revgraph, comm.dest).dists
+        omin[k, :] = dists_from(graph, comm.orig)
+        dmin[k, :] = dists_to(graph, comm.dest)
     end
 
     disable_tolls!(graph, prob)
-    revgraph = reverse(graph)
     for k = 1:nk
         comm = prob.K[k]
-        omax[k, :] = dijkstra_shortest_paths(graph, comm.orig).dists
-        dmax[k, :] = dijkstra_shortest_paths(revgraph, comm.dest).dists
+        omax[k, :] = dists_from(graph, comm.orig)
+        dmax[k, :] = dists_to(graph, comm.dest)
     end
 
     p = [shortest_path(graph, a.src, a.dst)[2] for a in prob.A[a1]]

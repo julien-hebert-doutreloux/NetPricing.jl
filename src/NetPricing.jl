@@ -25,6 +25,7 @@ include("misc/utils.jl")
 
 include("components/graph.jl")
 include("components/graphtolls.jl")
+include("components/graphdists.jl")
 include("components/graphmodel.jl")
 include("components/fixedarcsolver.jl")
 include("components/bigm.jl")

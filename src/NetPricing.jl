@@ -21,6 +21,7 @@ include("problems/preprocessedproblem.jl")
 include("problems/tollsdict.jl")
 
 include("misc/lazyenv.jl")
+include("misc/utils.jl")
 
 include("components/graph.jl")
 include("components/graphtolls.jl")

@@ -1,0 +1,1 @@
+basis(i, n) = [i == j for j in 1:n]

@@ -40,9 +40,6 @@ include("models/model-components.jl")
 include("models/refs-macros.jl")
 include("models/standard-model.jl")
 
-include("adaptive/adaptive-info.jl")
-include("adaptive/adaptive-model.jl")
-
 # include("plots/plot.jl")
 # include("plots/plot-multi.jl")
 
@@ -55,8 +52,6 @@ export build_graph, shortest_path, get_path_cost
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
 export standard_model
-
-export adaptive_model, step_adaptive!, optimize_adaptive!
 
 # export plot2d
 

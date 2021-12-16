@@ -15,6 +15,6 @@ end
 macro pushemptyrefs(model, refs)
     model = esc(model)
     ex = Expr(:block)
-    ex.args = [:(push!($model[$(Meta.quot(arg))], [])) for arg in eval(refs)]
+    ex.args = [:(push!($model[$(Meta.quot(arg))], nothing)) for arg in eval(refs)]
     return ex
 end

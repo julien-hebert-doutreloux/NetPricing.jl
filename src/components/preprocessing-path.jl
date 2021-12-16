@@ -20,7 +20,14 @@ function preprocess_path(prob::Problem, k, paths)
     # Translate the arcs
     A = [ProblemArc(Vrevmap[arc.src], Vrevmap[arc.dst], arc.cost, arc.toll) for arc in @view prob.A[Amap]]
 
-    return PreprocessedProblem(prob, length(Vmap), A, Vmap, Amap, Vrevmap, Arevmap, k,
+    # Translate the paths
+    mapped_paths = [Vrevmap[path] for path in paths]
+
+    return PathPreprocessedProblem(
+        PreprocessedProblem(prob, length(Vmap), A, Vmap, Amap, Vrevmap, Arevmap, k,
         Vrevmap[prob.K[k].orig],
-        Vrevmap[prob.K[k].dest])
+        Vrevmap[prob.K[k].dest]),
+        mapped_paths,
+        paths
+    )
 end

@@ -1,5 +1,7 @@
-## Structs
-struct PreprocessedProblem <: AbstractCommodityProblem
+abstract type AbstractPreprocessedProblem <: AbstractCommodityProblem end
+
+## Default preprocessed problem
+struct PreprocessedProblem <: AbstractPreprocessedProblem
     problem::Problem
     V::Int
     A::Vector{ProblemArc}

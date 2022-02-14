@@ -45,7 +45,6 @@ include("models/standard-model.jl")
 # include("plots/plot-multi.jl")
 
 include("benchmark.jl")
-include("experiments.jl")
 
 export AbstractProblem, AbstractCommodityProblem, Problem, AbstractPreprocessedProblem, PreprocessedProblem, PathPreprocessedProblem, UnprocessedProblem, ProblemArc, Commodity
 export read_problem, nodes, arcs, tolled_arcs, tollfree_arcs, srcdst_to_index, srcdst_to_cost, tolled_srcdst_to_index
@@ -57,6 +56,5 @@ export standard_model
 # export plot2d
 
 export run_benchmark_fixedarcsolvers, run_benchmark_shortest_path, run_benchmark_enumeration
-export run_experiment
 
 end # module

@@ -1,6 +1,6 @@
 module NetPricing
 
-using Printf, Crayons, Crayons.Box
+using Printf, Crayons, Crayons.Box, UnPack
 using JSON, Unmarshal
 using Graphs, SimpleWeightedGraphs
 using SparseArrays
@@ -39,7 +39,10 @@ include("components/preprocessing.jl")
 
 include("models/model-components.jl")
 include("models/refs-macros.jl")
-include("models/standard-model.jl")
+include("models/primal-representation.jl")
+include("models/dual-representation.jl")
+include("models/general-model.jl")
+include("models/named-models.jl")
 
 # include("plots/plot.jl")
 # include("plots/plot-multi.jl")
@@ -51,7 +54,9 @@ export read_problem, nodes, arcs, arcmap, paths, tolled_arcs, tollfree_arcs, src
 export build_graph, shortest_path, get_path_cost
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
-export standard_model
+export general_model, primal_arc, primal_path, dual_arc
+export std_model, pastd_model
+export standard_model, pathard_standard_model
 
 # export plot2d
 

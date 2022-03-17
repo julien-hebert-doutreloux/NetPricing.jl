@@ -79,6 +79,23 @@ function shortest_path(graph::AbstractGraph, orig, dest)
     return reverse!(path), dists[dest]
 end
 
+# Path arc iterator
+struct PathArcIterator
+    path::Vector{Int}
+    arcdict::Dict{Tuple{Int,Int},Int}
+end
+
+path_arcs(path, arcdict::Dict{Tuple{Int,Int},Int}) = PathArcIterator(path, arcdict)
+path_arcs(path, prob::AbstractProblem) = PathArcIterator(path, srcdst_to_index(prob))
+
+function Base.iterate(iter::PathArcIterator, i = 0)
+    @unpack path, arcdict = iter
+    return length(path) - i > 1 ? (arcdict[(path[i + 1],path[i + 2])], i + 1) : nothing
+end
+
+Base.eltype(::Type{PathArcIterator}) = Int
+Base.length(iter::PathArcIterator) = length(iter.path) - 1
+
 # Get path cost
 function get_path_cost(path, arccosts)
     cost = 0.0

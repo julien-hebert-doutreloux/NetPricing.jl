@@ -47,7 +47,7 @@ include("models/standard-model.jl")
 include("benchmark.jl")
 
 export AbstractProblem, AbstractCommodityProblem, Problem, AbstractPreprocessedProblem, PreprocessedProblem, PathPreprocessedProblem, UnprocessedProblem, ProblemArc, Commodity
-export read_problem, nodes, arcs, tolled_arcs, tollfree_arcs, srcdst_to_index, srcdst_to_cost, tolled_srcdst_to_index
+export read_problem, nodes, arcs, arcmap, paths, tolled_arcs, tollfree_arcs, srcdst_to_index, srcdst_to_cost, tolled_srcdst_to_index
 export build_graph, shortest_path, get_path_cost
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm

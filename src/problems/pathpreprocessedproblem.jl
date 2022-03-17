@@ -19,6 +19,8 @@ used_arcs(prob::PathPreprocessedProblem) = used_arcs(prob.pprob)
 
 arcmap(prob::PathPreprocessedProblem) = arcmap(prob.pprob)
 
+paths(prob::PathPreprocessedProblem) = prob.original_paths
+
 ## Pretty print
 function Base.show(io::IO, preprob::PathPreprocessedProblem)
     a1 = length(tolled_arcs(preprob))

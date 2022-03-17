@@ -21,6 +21,8 @@ demand(prob::AbstractCommodityProblem) = parent(prob).K[index(prob)].demand
 
 arcmap(prob::AbstractCommodityProblem) = 1:length(arcs(parent(prob)))
 
+paths(::AbstractCommodityProblem) = nothing
+
 ## Interface implementations
 nodes(::EmptyProblem) = 0
 arcs(::EmptyProblem) = ProblemArc[]
@@ -28,6 +30,7 @@ Base.parent(prob::EmptyProblem) = prob.problem
 index(prob::EmptyProblem) = prob.k
 used_nodes(::EmptyProblem) = Int[]
 used_arcs(::EmptyProblem) = Int[]
+paths(::EmptyProblem) = Vector{Int}[]
 
 nodes(prob::UnprocessedProblem) = prob.problem.V
 arcs(prob::UnprocessedProblem) = prob.problem.A

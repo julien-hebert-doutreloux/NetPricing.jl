@@ -65,6 +65,8 @@ function general_model(probs::Vector{<:AbstractCommodityProblem}, primal_repr, d
     for pprob in probs
         add_general_model!(model, pprob, primal_repr, dual_repr, @view(M[index(pprob),:]), N; kwargs...)
     end
+
+    model[:probs] = probs
     
     return model
 end

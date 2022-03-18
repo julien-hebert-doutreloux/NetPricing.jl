@@ -6,7 +6,7 @@ using Graphs, SimpleWeightedGraphs
 using SparseArrays
 using Hungarian
 using JuMP, Gurobi
-using DataStructures
+using DataStructures, IterTools
 # using GLMakie, GeometryBasics, Images
 using ProgressMeter, Distributed
 using BenchmarkTools, Random

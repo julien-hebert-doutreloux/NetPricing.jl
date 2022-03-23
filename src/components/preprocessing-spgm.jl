@@ -145,7 +145,7 @@ function preprocess_spgm(prob::Problem, k; graph = build_graph(prob))
     Vmap = collect(used_nodes)
 
     # Translate and filter the arcs
-    Vrevmap = revmap(Vmap, Vmap[end])
+    Vrevmap = revmap(Vmap, maximum(hasinput ∪ hasoutput))
     map!(arc -> ProblemArc(Vrevmap[arc.src], Vrevmap[arc.dst], arc.cost, arc.toll), A, A)
     filteridx = findall(arc -> arc.src > 0 && arc.dst > 0, A)
     A = A[filteridx]

@@ -46,7 +46,7 @@ function shortest_path(graph::AbstractGraph, orig, dest)
     dists = fill(Inf, nv(graph))
     parents = zeros(Int, nv(graph))
 
-    ws = weights(graph)
+    ws = Graphs.weights(graph)
     queue = PriorityQueue(orig => 0.0)
     dists[orig] = 0
 

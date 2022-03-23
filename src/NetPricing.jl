@@ -5,6 +5,7 @@ using JSON, Unmarshal
 using Graphs, SimpleWeightedGraphs
 using SparseArrays
 using Hungarian
+using Random, Distributions, StatsBase
 using JuMP, Gurobi
 using DataStructures, IterTools
 # using GLMakie, GeometryBasics, Images
@@ -23,6 +24,7 @@ include("problems/tollsdict.jl")
 
 include("misc/lazyenv.jl")
 include("misc/utils.jl")
+include("misc/consecutive-pairs.jl")
 
 include("components/graph.jl")
 include("components/graphtolls.jl")
@@ -44,6 +46,9 @@ include("models/dual-representation.jl")
 include("models/general-model.jl")
 include("models/named-models.jl")
 
+include("probgen/probgen.jl")
+include("probgen/topologies.jl")
+
 # include("plots/plot.jl")
 # include("plots/plot-multi.jl")
 
@@ -57,6 +62,11 @@ export preprocess, preprocess_path, preprocess_spgm
 export general_model, primal_arc, primal_path, dual_arc
 export std_model, pastd_model
 export standard_model, pathard_standard_model
+
+export generate_problem, generate_cost
+export grid_graph
+
+export consecutive_pairs
 
 # export plot2d
 

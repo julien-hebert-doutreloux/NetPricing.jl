@@ -32,7 +32,7 @@ function generate_problem(graph::SimpleWeightedDiGraph, num_commodities;
     candidates = first.(collect(sort(occurences, by=k->occurences[k])))
 
     # Toll-free graph to check if all commodities has at least 1 toll-free path
-    tollfreegraph = copy(graph)
+    tollfreegraph = SimpleDiGraph(graph)
 
     tolled = Set{Tuple{Int,Int}}()
     num_arcs = ne(graph)

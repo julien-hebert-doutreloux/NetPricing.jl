@@ -43,14 +43,14 @@ function add_general_model!(model::Model, prob::AbstractCommodityProblem, primal
 end
 
 ## Build model
-function general_model(probs::Vector{<:AbstractCommodityProblem}, primal_repr, dual_repr; silent=false, threads=nothing, kwargs...)
+function general_model(probs::Vector{<:AbstractCommodityProblem}, primal_repr, dual_repr; silent=false, threads=nothing, bigM_maxpaths=100, kwargs...)
     model = Model(() -> Gurobi.Optimizer(current_env()))
     set_optimizer_attribute(model, MOI.Silent(), silent)
     set_optimizer_attribute(model, MOI.NumberOfThreads(), threads)
 
     # Big M
     parentprob = parent(probs[1])
-    M, N = calculate_bigM(parentprob)
+    _, M, N = calculate_bigM_paths(probs, threads=threads, maxpaths=bigM_maxpaths)
 
     a1 = tolled_arcs(parentprob)
     a1dict = Dict(a => i for (i, a) in enumerate(a1))

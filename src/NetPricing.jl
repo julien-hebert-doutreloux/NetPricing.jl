@@ -40,6 +40,8 @@ include("components/preprocessing-light.jl")
 include("components/preprocessing.jl")
 include("components/inverse-model.jl")
 
+include("bigm-path/bigm-path.jl")
+
 include("models/model-components.jl")
 include("models/refs-macros.jl")
 include("models/primal-representation.jl")

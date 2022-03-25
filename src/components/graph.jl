@@ -105,3 +105,7 @@ function get_path_cost(path, arccosts)
     return cost
 end
 get_path_cost(path, prob::AbstractProblem) = get_path_cost(path, srcdst_to_cost(prob))
+
+# Get path tolled arcs
+path_tolled_arcs(path, arcdict::Dict{Tuple{Int,Int},Int}, a1) = filter(in(a1), collect(path_arcs(path, arcdict)))
+path_tolled_arcs(path, prob::AbstractProblem) = path_tolled_arcs(path, srcdst_to_index(prob), BitSet(tolled_arcs(prob)))

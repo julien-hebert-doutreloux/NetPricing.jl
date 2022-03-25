@@ -38,6 +38,7 @@ include("components/preprocessing-path.jl")
 include("components/preprocessing-spgm.jl")
 include("components/preprocessing-light.jl")
 include("components/preprocessing.jl")
+include("components/inverse-model.jl")
 
 include("models/model-components.jl")
 include("models/refs-macros.jl")
@@ -56,9 +57,11 @@ include("benchmark.jl")
 
 export AbstractProblem, AbstractCommodityProblem, Problem, AbstractPreprocessedProblem, PreprocessedProblem, PathPreprocessedProblem, UnprocessedProblem, ProblemArc, Commodity
 export read_problem, nodes, arcs, arcmap, paths, tolled_arcs, tollfree_arcs, srcdst_to_index, srcdst_to_cost, tolled_srcdst_to_index
-export build_graph, shortest_path, get_path_cost
+export build_graph, shortest_path, get_path_cost, path_arcs, path_tolled_arcs
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
+export inverse_model, set_inverse_model_odpairs, set_inverse_model_paths
+
 export general_model, primal_arc, primal_path, dual_arc
 export std_model, pastd_model
 export standard_model, pathard_standard_model

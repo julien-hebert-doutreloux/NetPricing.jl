@@ -7,6 +7,7 @@ using SparseArrays
 using Hungarian
 using Random, Distributions, StatsBase
 using JuMP, Gurobi
+import JuMP.Containers: DenseAxisArray
 using DataStructures, IterTools
 # using GLMakie, GeometryBasics, Images
 using ProgressMeter, Distributed
@@ -44,9 +45,11 @@ include("bigm-path/bigm-path.jl")
 
 include("models/model-components.jl")
 include("models/refs-macros.jl")
+include("models/formulation.jl")
+include("models/general-formulation.jl")
+include("models/formulation-assignment.jl")
 include("models/primal-representation.jl")
 include("models/dual-representation.jl")
-include("models/general-model.jl")
 include("models/named-models.jl")
 
 include("probgen/probgen.jl")
@@ -64,9 +67,13 @@ export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
 export inverse_model, set_inverse_model_odpairs, set_inverse_model_paths
 
-export general_model, primal_arc, primal_path, dual_arc
-export std_model, pastd_model
-export standard_model, pathard_standard_model
+export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath
+export Formulation, GeneralFormulation
+export StandardFormulation, PathArcStandardFormulation, ValueFunctionFormulation, PathValueFunctionFormulation
+export STDFormulation, PASTDFormulation, VFFormulation, PVFFormulation
+export formulate, assign, assign_breakpoint
+export general_model, std_model, pastd_model, vf_model, pvf_model
+export standard_model, path_arc_standard_model, value_function_model, path_value_function_model
 
 export generate_problem, generate_cost
 export grid_graph

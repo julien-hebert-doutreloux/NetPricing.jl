@@ -38,6 +38,21 @@ function path_arc_incident_matrix(prob::PathPreprocessedProblem)
     return mat
 end
 
+# Utils
+function remap_t(model, prob::AbstractCommodityProblem)
+    Amap = arcmap(prob)
+    a1 = tolled_arcs(prob)
+    return DenseAxisArray(model[:t][Amap[a1]].data, a1)
+end
+
+function expand_t(t, prob::AbstractCommodityProblem)
+    na = length(arcs(prob))
+    a1 = tolled_arcs(prob)
+    tfull = Vector{AffExpr}(zeros(na))
+    tfull[a1] .= t.data
+    return tfull
+end
+
 # Query
 value_x(model) = value.(model[:x])
 value_t(model) = value.(model[:t])

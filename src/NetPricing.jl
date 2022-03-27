@@ -41,11 +41,12 @@ include("components/preprocessing-light.jl")
 include("components/preprocessing.jl")
 include("components/inverse-model.jl")
 
-include("bigm-path/bigm-path.jl")
+include("models/formulation.jl")
+
+include("bigm/bigm-base.jl")
+include("bigm/bigm-path.jl")
 
 include("models/model-components.jl")
-include("models/refs-macros.jl")
-include("models/formulation.jl")
 include("models/general-formulation.jl")
 include("models/formulation-assignment.jl")
 include("models/primal-representation.jl")

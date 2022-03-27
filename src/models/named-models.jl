@@ -1,5 +1,5 @@
-function general_model(form_type::Type{GeneralFormulation{P,D}}, probs; kwargs...) where {P,D}
-    forms = assign.(form_type, probs)
+function general_model(form_type::Type{GeneralFormulation{P,D}}, probs; bigM_maxpaths=100, kwargs...) where {P,D}
+    forms = convert.(Formulation, filter!(!isnothing, assign.(form_type, probs; bigM_maxpaths=bigM_maxpaths)))
     return formulate(forms; kwargs...)
 end
 

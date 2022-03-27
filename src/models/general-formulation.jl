@@ -53,6 +53,7 @@ const PVFFormulation = PathValueFunctionFormulation
 # General formulation implementation
 function Base.append!(model::Model, form::GeneralFormulation, M, N;
     sdtol=1e-10,        # Strong duality tolerance
+    kwargs...
     )
     # Primal + linearization
     x, primalobj = formulate_primal(model, form)
@@ -66,3 +67,5 @@ function Base.append!(model::Model, form::GeneralFormulation, M, N;
 
     return sumtx * demand(problem(primal(form)))
 end
+
+calculate_bigM(form::GeneralFormulation; kwargs...) = calculate_bigM(problem(primal(form)))

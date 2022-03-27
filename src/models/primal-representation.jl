@@ -55,7 +55,7 @@ function linearization(model::Model, form::GeneralFormulation, x, M, N)
 
     a1dict = Dict(a => i for (i, a) in enumerate(tolled_arcs(parentprob)))
     mapped_a1 = [a1dict[a] for a in Amap[a1]]
-    M = @view M[k, mapped_a1]
+    M = @view M[mapped_a1]
     N = @view N[mapped_a1]
 
     @constraint(model, tx .≤ M .* x[a1])

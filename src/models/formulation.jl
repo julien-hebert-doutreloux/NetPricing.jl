@@ -7,9 +7,11 @@ function formulate(forms::Vector{<:Formulation}; silent=false, threads=nothing, 
     set_optimizer_attribute(model, MOI.Silent(), silent)
     set_optimizer_attribute(model, MOI.NumberOfThreads(), threads)
 
-    # Big M
     prob = problem(first(forms))
-    M, N = calculate_bigM(prob)
+
+    # Big M
+    Ms = [calculate_bigM(form, threads=threads) for form in forms]
+    N = max.(collect.(maximum.(Ms, dims=2))...)
 
     # Toll variables
     a1 = tolled_arcs(prob)
@@ -17,7 +19,7 @@ function formulate(forms::Vector{<:Formulation}; silent=false, threads=nothing, 
     @variable(model, 0 ≤ t[a=a1], upper_bound = N[a1dict[a]])
 
     # Add formulations
-    obj_terms = [append!(model, form, M, N; kwargs...) for form in forms]
+    obj_terms = [append!(model, form, M, N; kwargs...) for (form, M) in zip(forms, Ms)]
 
     # Set objective function
     @objective(model, Max, sum(obj_terms))

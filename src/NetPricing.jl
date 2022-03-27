@@ -4,17 +4,14 @@ using Printf, Crayons, Crayons.Box, UnPack
 using JSON, Unmarshal
 using Graphs, SimpleWeightedGraphs
 using SparseArrays
-using Hungarian
 using Random, Distributions, StatsBase
 using JuMP, Gurobi
-import JuMP.Containers: DenseAxisArray
 using DataStructures, IterTools
-# using GLMakie, GeometryBasics, Images
 using ProgressMeter, Distributed
 using BenchmarkTools, Random
 
 import Base.Iterators: flatten, product
-# import GLMakie.Axis
+import JuMP.Containers: DenseAxisArray
 
 include("problems/abstractproblem.jl")
 include("problems/problem.jl")
@@ -31,9 +28,6 @@ include("components/graph.jl")
 include("components/graphtolls.jl")
 include("components/graphdists.jl")
 include("components/graphmodel.jl")
-include("components/fixedarcsolver.jl")
-include("components/bigm.jl")
-include("components/smallm.jl")
 include("components/enumeration.jl")
 include("components/preprocessing-path.jl")
 include("components/preprocessing-spgm.jl")
@@ -56,9 +50,6 @@ include("models/named-models.jl")
 include("probgen/probgen.jl")
 include("probgen/topologies.jl")
 
-# include("plots/plot.jl")
-# include("plots/plot-multi.jl")
-
 include("benchmark.jl")
 
 export AbstractProblem, AbstractCommodityProblem, Problem, AbstractPreprocessedProblem, PreprocessedProblem, PathPreprocessedProblem, UnprocessedProblem, ProblemArc, Commodity
@@ -80,9 +71,5 @@ export generate_problem, generate_cost
 export grid_graph
 
 export consecutive_pairs
-
-# export plot2d
-
-export run_benchmark_fixedarcsolvers, run_benchmark_shortest_path, run_benchmark_enumeration
 
 end # module

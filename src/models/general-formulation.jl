@@ -69,3 +69,6 @@ function Base.append!(model::Model, form::GeneralFormulation, M, N;
 end
 
 calculate_bigM(form::GeneralFormulation; kwargs...) = calculate_bigM(problem(primal(form)))
+
+# Pretty print
+Base.show(io::IO, form::GeneralFormulation{P,D}) where {P,D} = print(io, "GeneralFormulation{$P, $D}(", problem(primal(form)), ")")

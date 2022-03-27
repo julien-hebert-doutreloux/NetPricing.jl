@@ -1,8 +1,7 @@
 using Test
-using NetPricingTollBranch
+using NetPricing
 using Random
 
 @testset "All tests" begin
-    include("test-fixedarcsolver.jl")
     include("test-graph.jl")
 end

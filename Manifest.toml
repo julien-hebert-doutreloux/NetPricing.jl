@@ -177,12 +177,6 @@ git-tree-sha1 = "d75a6c39ca5bc1a51ac467d1d3084a740b59c7c3"
 uuid = "2e9cd046-0924-5485-92f1-d5272153d98b"
 version = "0.11.0"
 
-[[Hungarian]]
-deps = ["LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "371a7df7a6cce5909d6c576f234a2da2e3fa0c98"
-uuid = "e91730f6-4275-51fb-a7a0-7064cfbd3b39"
-version = "0.6.0"
-
 [[HypergeometricFunctions]]
 deps = ["DualNumbers", "LinearAlgebra", "SpecialFunctions", "Test"]
 git-tree-sha1 = "65e4589030ef3c44d3b90bdc5aac462b4bb05567"

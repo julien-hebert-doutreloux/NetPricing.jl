@@ -1,41 +1,40 @@
 # Dual arc
-function dual_arc(model::Model, prob::AbstractCommodityProblem;
-    dualanchor=true,        # Fix λ_d to 0
-    dualbound=true,         # Add lower bound to λ
-)
+function formulate_dual(model::Model, form::GeneralFormulation{<:Any,DualArc})
+    prob = problem(dual(form))
     nv = nodes(prob)
-    na = length(arcs(prob))
-    a1 = tolled_arcs(prob)
     k = index(prob)
-    Amap = arcmap(prob)
     
     c = cost_vector(prob)
     A = incidence_matrix(prob)
     b = sourcesink_vector(prob)
     
-    # Variables
-    λ = @variable(model, [i=1:nv], base_name="λ[$k]")
-    t = JuMP.Containers.DenseAxisArray(model[:t][Amap[a1]].data, a1)
+    λ = @variable(model, [1:nv], lower_bound = 0, base_name="λ[$k]")
+    fix_var(λ[dest(prob)])
     
-    # Expressions
-    tfull = Array{Any}(zeros(na))
-    for a in a1
-        tfull[a] = t[a]
-    end
+    t = remap_t(model, prob)
+    tfull = expand_t(t, prob)
     
-    # Constraints
-    dualfeas = @constraint(model, A' * λ .≤ c + tfull)
+    @constraint(model, A' * λ .≤ c + tfull)
     dualobj = b' * λ
 
-    # Dual bounds
-    if dualbound
-        set_lower_bound.(λ, 0)
-    end
-    
-    # Dual anchor
-    if dualanchor
-        fix_var(λ[dest(prob)])
-    end
+    return dualobj
+end
 
-    return λ, dualfeas, dualobj
+# Dual path
+function formulate_dual(model::Model, form::GeneralFormulation{<:Any,DualPath})
+    prob = problem(dual(form))
+    k = index(prob)
+
+    c = cost_vector(prob)
+    δ = path_arc_incident_matrix(prob)
+
+    L = @variable(model, lower_bound = 0, base_name="L[$k]")
+
+    t = remap_t(model, prob)
+    tfull = expand_t(t, prob)
+
+    @constraint(model, L .<= δ' * (c + tfull))
+    dualobj = L
+
+    return dualobj
 end

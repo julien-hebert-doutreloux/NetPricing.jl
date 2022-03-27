@@ -30,7 +30,6 @@ Base.parent(prob::EmptyProblem) = prob.problem
 index(prob::EmptyProblem) = prob.k
 used_nodes(::EmptyProblem) = Int[]
 used_arcs(::EmptyProblem) = Int[]
-paths(::EmptyProblem) = Vector{Int}[]
 
 nodes(prob::UnprocessedProblem) = prob.problem.V
 arcs(prob::UnprocessedProblem) = prob.problem.A

@@ -58,9 +58,6 @@ function preprocess_spgm(prob::Problem, k; graph = build_graph(prob))
 
     # Add toll-free arcs helper
     function add_tollfree(src, dst, cost)
-        # Perturb the cost a little, so any bilevel feasible path is unique
-        cost += rand() * 1e-6
-
         # If there already exists an arc from src to dst, create a virtual node
         if (src, dst) in arcsset
             V += 1

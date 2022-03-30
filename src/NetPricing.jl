@@ -34,6 +34,7 @@ include("components/preprocessing-spgm.jl")
 include("components/preprocessing-light.jl")
 include("components/preprocessing.jl")
 include("components/inverse-model.jl")
+include("components/bilevel-feasible-test.jl")
 
 include("models/formulation.jl")
 
@@ -58,6 +59,7 @@ export build_graph, shortest_path, get_path_cost, path_arcs, path_tolled_arcs
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
 export inverse_model, set_inverse_model_odpairs, set_inverse_model_paths
+export bilevel_feasible_test_model, set_bilevel_feasible_test_odpairs, is_bilevel_feasible
 
 export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath
 export Formulation, GeneralFormulation
@@ -67,8 +69,7 @@ export formulate, assign, assign_breakpoint
 export general_model, std_model, pastd_model, vf_model, pvf_model
 export standard_model, path_arc_standard_model, value_function_model, path_value_function_model
 
-export generate_problem, generate_cost
-export grid_graph
+export generate_problem, grid_graph
 
 export consecutive_pairs
 

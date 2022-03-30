@@ -1,21 +1,3 @@
-# Representations
-abstract type PrimalRepresentation end
-abstract type DualRepresentation end
-
-struct PrimalArc <: PrimalRepresentation
-    prob::AbstractCommodityProblem
-end
-struct PrimalPath <: PrimalRepresentation
-    prob::PathPreprocessedProblem
-end
-
-struct DualArc <: DualRepresentation
-    prob::AbstractCommodityProblem
-end
-struct DualPath <: DualRepresentation
-    prob::PathPreprocessedProblem
-end
-
 # General Formulation with selectable primal and dual
 struct GeneralFormulation{P<:PrimalRepresentation, D<:DualRepresentation} <: Formulation
     primal::P
@@ -36,19 +18,6 @@ primal(form::GeneralFormulation) = form.primal
 dual(form::GeneralFormulation) = form.dual
 
 problem(form::GeneralFormulation) = parent(problem(primal(form)))
-problem(primal::PrimalRepresentation) = primal.prob
-problem(dual::DualRepresentation) = dual.prob
-
-# Named formulations
-const StandardFormulation = GeneralFormulation{PrimalArc, DualArc}
-const PathArcStandardFormulation = GeneralFormulation{PrimalPath, DualArc}
-const ValueFunctionFormulation = GeneralFormulation{PrimalArc, DualPath}
-const PathValueFunctionFormulation = GeneralFormulation{PrimalPath, DualPath}
-
-const STDFormulation = StandardFormulation
-const PASTDFormulation = PathArcStandardFormulation
-const VFFormulation = ValueFunctionFormulation
-const PVFFormulation = PathValueFunctionFormulation
 
 # General formulation implementation
 function Base.append!(model::Model, form::GeneralFormulation, M, N;
@@ -56,11 +25,11 @@ function Base.append!(model::Model, form::GeneralFormulation, M, N;
     kwargs...
     )
     # Primal + linearization
-    x, primalobj = formulate_primal(model, form)
-    sumtx = linearization(model, form, x, M, N)
+    x, primalobj = formulate_primal!(model, primal(form))
+    sumtx = linearization(model, problem(primal(form)), x, M, N)
 
     # Dual
-    dualobj = formulate_dual(model, form)
+    dualobj = formulate_dual!(model, dual(form))
 
     # Strong duality
     @constraint(model, primalobj + sumtx ≤ dualobj + sdtol)

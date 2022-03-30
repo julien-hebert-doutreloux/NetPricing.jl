@@ -37,16 +37,16 @@ include("components/inverse-model.jl")
 include("components/bilevel-feasible-test.jl")
 
 include("models/formulation.jl")
+include("models/model-components.jl")
+include("models/primal-representation.jl")
+include("models/dual-representation.jl")
 
 include("bigm/bigm-base.jl")
 include("bigm/bigm-path.jl")
 
-include("models/model-components.jl")
 include("models/general-formulation.jl")
-include("models/formulation-assignment.jl")
-include("models/primal-representation.jl")
-include("models/dual-representation.jl")
 include("models/named-models.jl")
+include("models/formulation-assignment.jl")
 
 include("probgen/probgen.jl")
 include("probgen/topologies.jl")
@@ -63,10 +63,11 @@ export bilevel_feasible_test_model, set_bilevel_feasible_test_odpairs, is_bileve
 
 export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath
 export Formulation, GeneralFormulation
+export formulate!, assign, assign_breakpoint
+export general_model, std_model, pastd_model, vf_model, pvf_model
+
 export StandardFormulation, PathArcStandardFormulation, ValueFunctionFormulation, PathValueFunctionFormulation
 export STDFormulation, PASTDFormulation, VFFormulation, PVFFormulation
-export formulate, assign, assign_breakpoint
-export general_model, std_model, pastd_model, vf_model, pvf_model
 export standard_model, path_arc_standard_model, value_function_model, path_value_function_model
 
 export generate_problem, grid_graph

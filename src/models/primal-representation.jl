@@ -1,6 +1,30 @@
+# Representations
+abstract type PrimalRepresentation end
+
+problem(primal::PrimalRepresentation) = primal.prob
+
+mutable struct PrimalArc <: PrimalRepresentation
+    prob::AbstractCommodityProblem
+    x::Union{Nothing,Vector{VariableRef}}
+
+    function PrimalArc(prob::AbstractCommodityProblem)
+        return new(prob, nothing)
+    end
+end
+
+mutable struct PrimalPath <: PrimalRepresentation
+    prob::PathPreprocessedProblem
+    z::Union{Nothing,Vector{VariableRef}}
+    x::Union{Nothing,DenseAxisArray{VariableRef}}
+
+    function PrimalPath(prob::PathPreprocessedProblem)
+        return new(prob, nothing, nothing)
+    end
+end
+
 # Primal arc
-function formulate_primal(model::Model, form::GeneralFormulation{PrimalArc,<:Any})
-    prob = problem(primal(form))
+function formulate_primal!(model::Model, primal::PrimalArc)
+    prob = problem(primal)
     na = length(arcs(prob))
     a1 = tolled_arcs(prob)
     k = index(prob)
@@ -9,7 +33,7 @@ function formulate_primal(model::Model, form::GeneralFormulation{PrimalArc,<:Any
     A = incidence_matrix(prob)
     b = sourcesink_vector(prob)
 
-    x = @variable(model, [a=1:na], lower_bound = 0, upper_bound = 1, binary = a in a1, base_name="x[$k]")
+    primal.x = x = @variable(model, [a=1:na], lower_bound = 0, upper_bound = 1, binary = a in a1, base_name="x[$k]")
 
     @constraint(model, A * x .== b)
     primalobj = c' * x
@@ -18,8 +42,8 @@ function formulate_primal(model::Model, form::GeneralFormulation{PrimalArc,<:Any
 end
 
 # Primal path
-function formulate_primal(model::Model, form::GeneralFormulation{PrimalPath,<:Any})
-    prob = problem(primal(form))
+function formulate_primal!(model::Model, primal::PrimalPath)
+    prob = problem(primal)
     all_paths = prob.paths
     np = length(all_paths)
     a1 = tolled_arcs(prob)
@@ -29,8 +53,8 @@ function formulate_primal(model::Model, form::GeneralFormulation{PrimalPath,<:An
     δ = path_arc_incident_matrix(prob)
     δ1 = @view δ[a1, :]
 
-    z = @variable(model, [1:np], lower_bound = 0, upper_bound = 1, binary = true, base_name="z[$k]")
-    x = @variable(model, [a1], lower_bound = 0, upper_bound = 1, base_name="x[$k]")
+    primal.z = z = @variable(model, [1:np], lower_bound = 0, upper_bound = 1, binary = true, base_name="z[$k]")
+    primal.x = x = @variable(model, [a1], lower_bound = 0, upper_bound = 1, base_name="x[$k]")
 
     @constraint(model, sum(z) == 1)
     @constraint(model, x .== δ1 * z)
@@ -41,9 +65,8 @@ function formulate_primal(model::Model, form::GeneralFormulation{PrimalPath,<:An
 end
 
 # Linearization
-function linearization(model::Model, form::GeneralFormulation, x, M, N)
-    prob = problem(primal(form))
-    parentprob = problem(form)
+function linearization(model::Model, prob::AbstractCommodityProblem, x, M, N)
+    parentprob = parent(prob)
     a1 = tolled_arcs(prob)
     k = index(prob)
     Amap = arcmap(prob)

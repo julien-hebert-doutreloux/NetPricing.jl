@@ -1,6 +1,18 @@
+# Named formulations
+const StandardFormulation = GeneralFormulation{PrimalArc, DualArc}
+const PathArcStandardFormulation = GeneralFormulation{PrimalPath, DualArc}
+const ValueFunctionFormulation = GeneralFormulation{PrimalArc, DualPath}
+const PathValueFunctionFormulation = GeneralFormulation{PrimalPath, DualPath}
+
+const STDFormulation = StandardFormulation
+const PASTDFormulation = PathArcStandardFormulation
+const VFFormulation = ValueFunctionFormulation
+const PVFFormulation = PathValueFunctionFormulation
+
+# Named models
 function general_model(form_type::Type{GeneralFormulation{P,D}}, probs; bigM_maxpaths=100, kwargs...) where {P,D}
     forms = convert.(Formulation, filter!(!isnothing, assign.(form_type, probs; bigM_maxpaths=bigM_maxpaths)))
-    return formulate(forms; kwargs...)
+    return formulate!(forms; kwargs...)
 end
 
 standard_model(probs; kwargs...) = general_model(StandardFormulation, probs; kwargs...)

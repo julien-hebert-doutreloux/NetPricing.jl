@@ -33,8 +33,7 @@ include("components/preprocessing-path.jl")
 include("components/preprocessing-spgm.jl")
 include("components/preprocessing-light.jl")
 include("components/preprocessing.jl")
-include("components/inverse-model.jl")
-include("components/bilevel-feasible-test.jl")
+include("components/conjugate-model.jl")
 
 include("models/formulation.jl")
 include("models/model-components.jl")
@@ -58,8 +57,8 @@ export read_problem, nodes, arcs, arcmap, paths, tolled_arcs, tollfree_arcs, src
 export build_graph, shortest_path, get_path_cost, path_arcs, path_tolled_arcs
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
-export inverse_model, set_inverse_model_odpairs, set_inverse_model_paths
-export bilevel_feasible_test_model, set_bilevel_feasible_test_odpairs, is_bilevel_feasible
+export ConjugateModel, tvals, set_odpairs, set_demands, set_paths
+export is_bilevel_feasible
 
 export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath
 export Formulation, GeneralFormulation

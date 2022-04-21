@@ -37,8 +37,8 @@ function ConjugateModel(prob::Problem, num_commodities,
 end
 
 # Init a conjugate model for the whole problem, weights = commodity demands, odpairs already set
-function ConjugateModel(prob::Problem)
-    cmodel = ConjugateModel(prob, length(prob.K), [comm.demand for comm in prob.K])
+function ConjugateModel(prob::Problem; kwargs...)
+    cmodel = ConjugateModel(prob, length(prob.K), [comm.demand for comm in prob.K]; kwargs...)
     set_odpairs(cmodel, [(comm.orig, comm.dest) for comm in prob.K])
     return cmodel
 end

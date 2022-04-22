@@ -33,7 +33,10 @@ include("components/preprocessing-path.jl")
 include("components/preprocessing-spgm.jl")
 include("components/preprocessing-light.jl")
 include("components/preprocessing.jl")
-include("components/conjugate-model.jl")
+
+include("conjugate-solvers/abstract.jl")
+include("conjugate-solvers/linear-model.jl")
+include("conjugate-solvers/dynamic-linear-model.jl")
 
 include("models/formulation.jl")
 include("models/model-components.jl")
@@ -50,6 +53,8 @@ include("models/formulation-assignment.jl")
 include("probgen/probgen.jl")
 include("probgen/topologies.jl")
 
+include("misc/default.jl")
+
 include("benchmark.jl")
 
 export AbstractProblem, AbstractCommodityProblem, Problem, AbstractPreprocessedProblem, PreprocessedProblem, PathPreprocessedProblem, UnprocessedProblem, ProblemArc, Commodity
@@ -57,8 +62,9 @@ export read_problem, nodes, arcs, arcmap, paths, tolled_arcs, tollfree_arcs, src
 export build_graph, shortest_path, get_path_cost, path_arcs, path_tolled_arcs
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
-export ConjugateModel, tvals, set_odpairs, set_demands, set_paths
-export is_bilevel_feasible
+
+export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, is_bilevel_feasible, solve
+export ConjugateLinearModel, ConjugateDynamicLinearModel
 
 export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath
 export Formulation, GeneralFormulation

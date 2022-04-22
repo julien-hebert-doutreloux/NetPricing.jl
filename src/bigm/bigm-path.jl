@@ -1,7 +1,9 @@
 # Extract big M of each path and overall big M of the arcs
-function calculate_bigM_paths(prob::PathPreprocessedProblem; threads=nothing)
+# ConjugateLinearModel is faster than ConjugateDynamicLinearModel if there is only 1 commodity
+function calculate_bigM_paths(prob::PathPreprocessedProblem; threads=nothing, conjugate_solver=ConjugateLinearModel)
     parentprob = parent(prob)
-    cmodel = ConjugateModel(parent(prob), 1, silent=true, threads=threads)
+    # 
+    cmodel = conjugate_solver(parent(prob), 1, threads=threads)
     set_odpairs(cmodel, [index(prob)])
 
     paths = prob.original_paths
@@ -34,6 +36,8 @@ end
 problem(form::BigMPath) = problem(form.form)
 
 Base.append!(model::Model, form::BigMPath, args...; kwargs...) = append!(model, form.form, args...; kwargs...)
-calculate_bigM(form::BigMPath; threads=nothing, kwargs...) = calculate_bigM_paths(form.prob, threads=threads)
+
+calculate_bigM(form::BigMPath; threads=nothing, conjugate_solver=ConjugateLinearModel, kwargs...) =
+    calculate_bigM_paths(form.prob, threads=threads, conjugate_solver=conjugate_solver)
 
 Base.show(io::IO, form::BigMPath) = print(io, form.form, " + Big-M from paths")

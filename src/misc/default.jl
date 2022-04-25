@@ -1,1 +1,1 @@
-default_conjugate_solver() = ConjugateDynamicLinearModel
+default_conjugate_solver() = ConjugateLinearModel

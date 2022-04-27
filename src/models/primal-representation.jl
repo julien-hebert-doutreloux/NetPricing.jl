@@ -7,18 +7,19 @@ mutable struct PrimalArc <: PrimalRepresentation
     prob::AbstractCommodityProblem
     x::Union{Nothing,Vector{VariableRef}}
 
-    function PrimalArc(prob::AbstractCommodityProblem)
+    function PrimalArc(prob::AbstractCommodityProblem; kwargs...)
         return new(prob, nothing)
     end
 end
 
 mutable struct PrimalPath <: PrimalRepresentation
     prob::PathPreprocessedProblem
+    binary_x::Bool
     z::Union{Nothing,Vector{VariableRef}}
     x::Union{Nothing,DenseAxisArray{VariableRef}}
 
-    function PrimalPath(prob::PathPreprocessedProblem)
-        return new(prob, nothing, nothing)
+    function PrimalPath(prob::PathPreprocessedProblem; binary_x::Bool=false)
+        return new(prob, binary_x, nothing, nothing)
     end
 end
 
@@ -53,8 +54,8 @@ function formulate_primal!(model::Model, primal::PrimalPath)
     δ = path_arc_incident_matrix(prob)
     δ1 = @view δ[a1, :]
 
-    primal.z = z = @variable(model, [1:np], lower_bound = 0, upper_bound = 1, binary = true, base_name="z[$k]")
-    primal.x = x = @variable(model, [a1], lower_bound = 0, upper_bound = 1, base_name="x[$k]")
+    primal.z = z = @variable(model, [1:np], lower_bound = 0, upper_bound = 1, binary = !primal.binary_x, base_name="z[$k]")
+    primal.x = x = @variable(model, [a1], lower_bound = 0, upper_bound = 1, binary = primal.binary_x, base_name="x[$k]")
 
     @constraint(model, sum(z) == 1)
     @constraint(model, x .== δ1 * z)

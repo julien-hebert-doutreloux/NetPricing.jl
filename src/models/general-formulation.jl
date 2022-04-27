@@ -4,7 +4,7 @@ struct GeneralFormulation{P<:PrimalRepresentation, D<:DualRepresentation} <: For
     dual::D
 end
 
-GeneralFormulation{P,D}(prob) where {P,D} = GeneralFormulation(P(prob), D(prob))
+GeneralFormulation{P,D}(prob; binary_x=false) where {P,D} = GeneralFormulation(P(prob; binary_x=binary_x), D(prob))
 
 # Type queries
 primal_type(::Type{GeneralFormulation{P,D}}) where {P,D} = P

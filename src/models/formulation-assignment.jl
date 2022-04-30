@@ -4,9 +4,9 @@ assign(::Any, ::EmptyProblem; kwargs...) = nothing
 # Assign a formulation to a problem type, fallback to standard formulation
 # Integrated with improved big-M on PathPreprocessedProblem
 function assign(formulation::Type{GeneralFormulation{P,D}}, prob::PathPreprocessedProblem;
-    bigM_maxpaths=100, binary_x=false, kwargs...) where {P,D}
+    bigM_maxpaths=100, kwargs...) where {P,D}
 
-    form = formulation(prob, binary_x=binary_x)
+    form = formulation(prob)
     (length(paths(prob)) <= bigM_maxpaths) && (form = BigMPath(form, prob))
     return form
 end

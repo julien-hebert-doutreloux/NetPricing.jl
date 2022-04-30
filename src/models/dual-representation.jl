@@ -1,27 +1,24 @@
-# Representations
+#=
+A DualRepresentation must define:
+- dualobj(dual): the follower's objective term of the dual (e.g. b'λ)
+- formulate_dual!(model, dual): add the dual to the model
+=#
 abstract type DualRepresentation end
 
 problem(dual::DualRepresentation) = dual.prob
+dualobj(dual::DualRepresentation) = dual.dualobj
 
+# Dual arc
 mutable struct DualArc <: DualRepresentation
     prob::AbstractCommodityProblem
     λ::Union{Nothing,Vector{VariableRef}}
+    dualobj::Union{Nothing,AffExpr}
     
     function DualArc(prob::AbstractCommodityProblem)
-        return new(prob, nothing)
+        return new(prob, nothing, nothing)
     end
 end
 
-mutable struct DualPath <: DualRepresentation
-    prob::PathPreprocessedProblem
-    L::Union{Nothing,VariableRef}
-
-    function DualPath(prob::PathPreprocessedProblem)
-        return new(prob, nothing)
-    end
-end
-
-# Dual arc
 function formulate_dual!(model::Model, dual::DualArc)
     prob = problem(dual)
     nv = nodes(prob)
@@ -38,12 +35,22 @@ function formulate_dual!(model::Model, dual::DualArc)
     tfull = expand_t(t, prob)
     
     @constraint(model, A' * λ .≤ c + tfull)
-    dualobj = b' * λ
+    dual.dualobj = b' * λ
 
-    return dualobj
+    return
 end
 
 # Dual path
+mutable struct DualPath <: DualRepresentation
+    prob::PathPreprocessedProblem
+    L::Union{Nothing,VariableRef}
+    dualobj::Union{Nothing,AffExpr}
+
+    function DualPath(prob::PathPreprocessedProblem)
+        return new(prob, nothing, nothing)
+    end
+end
+
 function formulate_dual!(model::Model, dual::DualPath)
     prob = problem(dual)
     k = index(prob)
@@ -57,7 +64,7 @@ function formulate_dual!(model::Model, dual::DualPath)
     tfull = expand_t(t, prob)
 
     @constraint(model, L .<= δ' * (c + tfull))
-    dualobj = L
+    dual.dualobj = L
 
-    return dualobj
+    return
 end

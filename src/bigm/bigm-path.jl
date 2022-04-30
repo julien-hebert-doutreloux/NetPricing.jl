@@ -34,8 +34,11 @@ struct BigMPath{T<:Formulation} <: Formulation
 end
 
 problem(form::BigMPath) = problem(form.form)
+primal(form::BigMPath) = primal(form.form)
+dual(form::BigMPath) = dual(form.form)
+objective_term(form::BigMPath) = objective_term(form.form)
 
-Base.append!(model::Model, form::BigMPath, args...; kwargs...) = append!(model, form.form, args...; kwargs...)
+Base.append!(model::Model, form::BigMPath; kwargs...) = append!(model, form.form; kwargs...)
 
 calculate_bigM(form::BigMPath; threads=nothing, conjugate_solver=ConjugateLinearModel, kwargs...) =
     calculate_bigM_paths(form.prob, threads=threads, conjugate_solver=conjugate_solver)

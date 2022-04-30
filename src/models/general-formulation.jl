@@ -4,7 +4,7 @@ struct GeneralFormulation{P<:PrimalRepresentation, D<:DualRepresentation} <: For
     dual::D
 end
 
-GeneralFormulation{P,D}(prob; binary_x=false) where {P,D} = GeneralFormulation(P(prob; binary_x=binary_x), D(prob))
+GeneralFormulation{P,D}(prob) where {P,D} = GeneralFormulation(P(prob), D(prob))
 
 # Type queries
 primal_type(::Type{GeneralFormulation{P,D}}) where {P,D} = P
@@ -20,24 +20,14 @@ dual(form::GeneralFormulation) = form.dual
 problem(form::GeneralFormulation) = parent(problem(primal(form)))
 
 # General formulation implementation
-function Base.append!(model::Model, form::GeneralFormulation, M, N;
-    sdtol=1e-10,        # Strong duality tolerance
-    kwargs...
-    )
-    # Primal + linearization
-    x, primalobj = formulate_primal!(model, primal(form))
-    sumtx = linearization(model, problem(primal(form)), x, M, N)
-
-    # Dual
-    dualobj = formulate_dual!(model, dual(form))
-
-    # Strong duality
-    @constraint(model, primalobj + sumtx ≤ dualobj + sdtol)
-
-    return sumtx * demand(problem(primal(form)))
+function Base.append!(model::Model, form::GeneralFormulation; kwargs...)
+    formulate_primal!(model, primal(form))
+    formulate_dual!(model, dual(form))
+    return
 end
 
 calculate_bigM(form::GeneralFormulation; kwargs...) = calculate_bigM(problem(primal(form)))
+objective_term(form::GeneralFormulation) = demand(problem(primal(form))) * (dualobj(form) - primalobj(form))
 
 # Pretty print
 Base.show(io::IO, form::GeneralFormulation{P,D}) where {P,D} = print(io, "GeneralFormulation{$P, $D}(", problem(primal(form)), ")")

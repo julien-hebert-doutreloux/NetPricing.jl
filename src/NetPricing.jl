@@ -42,11 +42,13 @@ include("models/formulation.jl")
 include("models/model-components.jl")
 include("models/primal-representation.jl")
 include("models/dual-representation.jl")
+include("models/linearizations/abstract-linearization.jl")
 
 include("bigm/bigm-base.jl")
 include("bigm/bigm-path.jl")
 
 include("models/general-formulation.jl")
+include("models/linearizations/commodity-linearization.jl")
 include("models/named-models.jl")
 include("models/formulation-assignment.jl")
 
@@ -67,6 +69,7 @@ export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, is_b
 export ConjugateLinearModel, ConjugateDynamicLinearModel
 
 export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath
+export AbstractLinearization, CommodityLinearization, ArcLinearization, PathLinearization
 export Formulation, GeneralFormulation
 export formulate!, assign, assign_breakpoint
 export general_model, std_model, pastd_model, vf_model, pvf_model

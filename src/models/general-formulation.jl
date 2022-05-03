@@ -27,7 +27,8 @@ function Base.append!(model::Model, form::GeneralFormulation; kwargs...)
 end
 
 calculate_bigM(form::GeneralFormulation; kwargs...) = calculate_bigM(problem(primal(form)))
-objective_term(form::GeneralFormulation) = demand(problem(primal(form))) * (dualobj(form) - primalobj(form))
+unnormalized_objective_term(form::GeneralFormulation) = dualobj(dual(form)) - primalobj(primal(form))
+objective_term(form::GeneralFormulation) = demand(problem(primal(form))) * unnormalized_objective_term(form)
 
 # Pretty print
 Base.show(io::IO, form::GeneralFormulation{P,D}) where {P,D} = print(io, "GeneralFormulation{$P, $D}(", problem(primal(form)), ")")

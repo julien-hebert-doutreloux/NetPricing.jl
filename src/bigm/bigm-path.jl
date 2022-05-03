@@ -37,6 +37,7 @@ problem(form::BigMPath) = problem(form.form)
 primal(form::BigMPath) = primal(form.form)
 dual(form::BigMPath) = dual(form.form)
 objective_term(form::BigMPath) = objective_term(form.form)
+unnormalized_objective_term(form::BigMPath) = unnormalized_objective_term(form.form)
 
 Base.append!(model::Model, form::BigMPath; kwargs...) = append!(model, form.form; kwargs...)
 

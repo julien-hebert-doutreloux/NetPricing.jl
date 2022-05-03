@@ -13,7 +13,7 @@ function linearize_commodity!(model::Model, linearization::CommodityLinearizatio
     sumtx = linearize_commodity_primal(model, linearization, primal(form), M, N)
 
     # Strong duality
-    @constraint(model, primalobj(form) + sumtx <= dualobj(form) + sdtol)
+    @constraint(model, sumtx <= unnormalized_objective_term(form) + sdtol)
 
     return sumtx
 end
@@ -67,3 +67,8 @@ end
 
 linearize_commodity_extra(::PathLinearization, primal::PrimalArc) =
     linearize_commodity_extra(ArcLinearization(), primal)
+
+# Envelop only: only adds the constraint, does not make anything binary
+struct EnvelopOnly <: CommodityLinearization end
+
+function linearize_commodity_extra(::EnvelopOnly, ::PrimalRepresentation) end

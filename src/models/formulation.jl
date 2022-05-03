@@ -7,11 +7,11 @@ A Formulation must define:
 - append!(model, form): add formulation to the model
 - calculate_bigM(form): return a matrix whose row a corresponds to bigM candidates of arc a (order in a1)
 - objective_term(form): term to add to the objective function
+- unnormalized_objective_term(form): objective term before multiply by demand
 =#
 abstract type Formulation end
 
-primalobj(form::Formulation) = primalobj(primal(form))
-dualobj(form::Formulation) = dualobj(dual(form))
+abstract type AbstractLinearization end
 
 # Formulate: actualize all assigned formulations into model
 function formulate!(forms::Vector{<:Formulation}, linearization::AbstractLinearization; silent=false, threads=nothing, sdtol=1e-10, kwargs...)

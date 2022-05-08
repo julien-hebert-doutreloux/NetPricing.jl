@@ -65,9 +65,9 @@ function set_odpairs(cmodel::ConjugateDynamicLinearModel, odpairs::AbstractVecto
 end
 
 # Set demands
-function set_demands(cmodel::ConjugateDynamicLinearModel, demands, discount::AbstractDict{Int,<:Real})
+function set_demands(cmodel::ConjugateDynamicLinearModel, demands, priority; discount=1-1e-5)
     a1 = tolled_arcs(cmodel.prob)
-    cmodel.demands = Dict(a => get(demands, a, 0.) * get(discount, a, 1.) for a in a1)
+    cmodel.demands = Dict(a => get(demands, a, 0.) * (a ∈ priority ? discount : 1) for a in a1)
     return nothing
 end
 

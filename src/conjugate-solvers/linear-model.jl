@@ -56,11 +56,11 @@ function set_odpairs(cmodel::ConjugateLinearModel, odpairs::AbstractVector{Tuple
     return nothing
 end
 
-# Set demands
-function set_demands(cmodel::ConjugateLinearModel, demands, discount::AbstractDict{Int,<:Real})
+# Set demands (and maximize sum of tolls in priority list)
+function set_demands(cmodel::ConjugateLinearModel, demands, priority; discount=1-1e-5)
     model = cmodel.model
     for (a, w) in demands
-        set_objective_coefficient(model, model[:t][a], -w * get(discount, a, 1))
+        set_objective_coefficient(model, model[:t][a], -w * (a ∈ priority ? discount : 1))
     end
     return nothing
 end

@@ -1,5 +1,5 @@
 @testset "Graph" begin
-    prob = read_problem("../problems/paper/d30-01.json")
+    prob = read_problem("problems/d30-01.json")
     graph = build_graph(prob)
 
     @testset "Minimal shortest path" begin

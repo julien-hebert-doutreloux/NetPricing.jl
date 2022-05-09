@@ -39,6 +39,10 @@ include("conjugate-solvers/linear-model.jl")
 include("conjugate-solvers/dynamic-linear-model.jl")
 include("conjugate-solvers/kkt-model.jl")
 
+include("bf-tests/abstract.jl")
+include("bf-tests/conjugate-tester.jl")
+include("bf-tests/kkt-strong-bf-tester.jl")
+
 include("models/formulation.jl")
 include("models/model-components.jl")
 include("models/primal-representation.jl")
@@ -64,8 +68,11 @@ export build_graph, shortest_path, get_path_cost, path_arcs, path_tolled_arcs
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
 
-export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, is_bilevel_feasible, solve, is_strongly_bilevel_feasible
+export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, solve
 export ConjugateLinearModel, ConjugateDynamicLinearModel, ConjugateKKTModel
+
+export AbstractBFTester, AbstractStrongBFTester, is_bilevel_feasible, is_strongly_bilevel_feasible
+export ConjugateBFTester, KKTStrongBFTester
 
 export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath
 export Formulation, GeneralFormulation

@@ -2,7 +2,7 @@
 # ConjugateLinearModel is faster than ConjugateDynamicLinearModel if there is only 1 commodity
 function calculate_bigM_paths(prob::PathPreprocessedProblem; threads=nothing, conjugate_solver=ConjugateLinearModel)
     parentprob = parent(prob)
-    # 
+
     cmodel = conjugate_solver(parent(prob), 1, threads=threads)
     set_odpairs(cmodel, [index(prob)])
 
@@ -18,7 +18,7 @@ function calculate_bigM_paths(prob::PathPreprocessedProblem; threads=nothing, co
     for (p, path) in enumerate(paths)
         tolled = path_tolled_arcs(path, arcdict, a1set)
         for a in tolled
-            set_paths(cmodel, [path], Dict(a => 1-1e-5), set_odpairs=false)
+            set_demands(cmodel, count_tolled_arcs(parentprob, [path]))
             optimize!(cmodel)
             Mp[a1dict[a],p] = value(cmodel.model[:t][a])
         end

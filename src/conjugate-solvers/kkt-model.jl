@@ -1,6 +1,6 @@
 # ConjugateKKTModel: similar to ConjugateLinearModel, but use strong duality to enforce optimality,
 # while priority is implemented via objective function.
-# This model is able to test for strong bilevel feasibility
+# This model is able to test for strong bilevel feasibility (see KKTStrongBFTester)
 struct ConjugateKKTModel <: AbstractConjugateSolver
     model::Model
     prob::Problem
@@ -104,7 +104,7 @@ JuMP.optimize!(cmodel::ConjugateKKTModel) = optimize!(cmodel.model)
 JuMP.objective_value(cmodel::ConjugateKKTModel) = value(cmodel.model[:L])
 tvals(cmodel::ConjugateKKTModel) = value.(cmodel.model[:t]).data
 
-# Strong bilevel feasibility test
+# Functions for strong bilevel feasibility test
 function clear_slack(cmodel::ConjugateKKTModel)
     # Set all s to 0
     model = cmodel.model
@@ -121,27 +121,4 @@ function set_slack(cmodel::ConjugateKKTModel, active_arcs)
         set_normalized_coefficient(slackselect[a, k], S, a ∈ active_arcs[k] ? 0 : -1)
     end
     return
-end
-
-function is_strongly_bilevel_feasible(cmodel::ConjugateKKTModel, paths; set_odpairs=true)
-    prob, model = problem(cmodel), cmodel.model
-
-    # Set demands from paths, using SlackPriority
-    set_paths(cmodel, paths, SlackPriority(), set_odpairs=set_odpairs)
-    
-    # Extract the set of arcs for each path
-    arcdict = srcdst_to_index(prob)
-    active_arcs = [BitSet(path_arcs(path, arcdict)) for path in paths]
-
-    # Set the model into interior test mode
-    set_slack(cmodel, active_arcs)
-
-    # Solve
-    optimize!(model)
-
-    # Strong bilevel feasibility implies S > 0
-    # If S < 0, the paths are not bilevel feasible
-    # If S = 0, they are bilevel feasible but not strongly
-    Sval = objective_value(model)
-    return Sval ≥ 1e-6
 end

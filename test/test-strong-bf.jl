@@ -8,8 +8,8 @@
         [5,11,12,10], [5,13,12,10], [5,10]
     ]
 
-    @testset "Pair of commodities" begin
-        cmodel = ConjugateKKTModel(prob, 2)
+    @testset "Pair of paths" begin
+        cmodel = KKTStrongBFTester(prob, 2)
         for p in paths, q in paths
             isbf = is_bilevel_feasible(cmodel, [p, q])
             issbf = is_strongly_bilevel_feasible(cmodel, [p, q])

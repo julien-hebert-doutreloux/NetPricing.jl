@@ -22,8 +22,7 @@ function is_bilevel_feasible(tester::ConjugateBFTester, paths; set_odpairs=true)
     optimize!(cmodel)
 
     objval = objective_value(cmodel)
-    arccosts = srcdst_to_cost(problem(cmodel))
-    expecting = sum(get_path_cost(path, arccosts) * weight for (path, weight) in zip(paths, weights(cmodel)))
+    expecting = sum_paths_costs(problem(cmodel), paths)
 
     return objval >= expecting - 1e-6
 end

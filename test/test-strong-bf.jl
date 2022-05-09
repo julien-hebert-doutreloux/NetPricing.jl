@@ -7,16 +7,22 @@
         [4,11,12,9], [4,13,12,9], [4,9],
         [5,11,12,10], [5,13,12,10], [5,10]
     ]
+    testers = [
+        ConjugateKKTTester,
+        ConjugatePrimalTester,
+    ]
 
     @testset "Pair of paths" begin
-        cmodel = KKTStrongBFTester(prob, 2)
-        for p in paths, q in paths
-            isbf = is_bilevel_feasible(cmodel, [p, q])
-            issbf = is_strongly_bilevel_feasible(cmodel, [p, q])
-            same_comm = (p[1] == q[1] && p[end] == q[end])  # Whether p and q are in the same commodity
-            same_path = (p == q)                            # Whether p and q are the same path
-            
-            @test issbf == (same_comm ? same_path : isbf)
+        for tester_type in testers
+            tester = tester_type(prob, 2)
+            for p in paths, q in paths
+                isbf = is_bilevel_feasible(tester, [p, q])
+                issbf = is_strongly_bilevel_feasible(tester, [p, q])
+                same_comm = (p[1] == q[1] && p[end] == q[end])  # Whether p and q are in the same commodity
+                same_path = (p == q)                            # Whether p and q are the same path
+                
+                @test issbf == (same_comm ? same_path : isbf)
+            end
         end
     end
 end

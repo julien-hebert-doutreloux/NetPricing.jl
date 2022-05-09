@@ -41,7 +41,8 @@ include("conjugate-solvers/kkt-model.jl")
 
 include("bf-tests/abstract.jl")
 include("bf-tests/conjugate-tester.jl")
-include("bf-tests/kkt-strong-bf-tester.jl")
+include("bf-tests/conjugate-kkt-tester.jl")
+include("bf-tests/conjugate-primal-tester.jl")
 
 include("models/formulation.jl")
 include("models/model-components.jl")
@@ -72,7 +73,7 @@ export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, solv
 export ConjugateLinearModel, ConjugateDynamicLinearModel, ConjugateKKTModel
 
 export AbstractBFTester, AbstractStrongBFTester, is_bilevel_feasible, is_strongly_bilevel_feasible
-export ConjugateBFTester, KKTStrongBFTester
+export ConjugateBFTester, ConjugateKKTTester, ConjugatePrimalTester
 
 export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath
 export Formulation, GeneralFormulation

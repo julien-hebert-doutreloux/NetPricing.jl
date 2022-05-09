@@ -13,3 +13,9 @@ function count_tolled_arcs(prob::Problem, paths, weights=ones(length(paths)))
     counts = Dict(a => sum(a in set ? weights[k] : 0 for (k, set) in enumerate(tolled_sets)) for a in a1)
     return counts
 end
+
+# Calculate sum of costs of paths
+function sum_paths_costs(prob::Problem, paths, weights=ones(length(paths)))
+    arccosts = srcdst_to_cost(prob)
+    return sum(get_path_cost(path, arccosts) * weight for (path, weight) in zip(paths, weights))
+end

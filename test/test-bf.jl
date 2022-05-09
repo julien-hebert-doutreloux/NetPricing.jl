@@ -13,7 +13,8 @@
         ConjugateBFTester{ConjugateLinearModel},
         ConjugateBFTester{ConjugateDynamicLinearModel},
         ConjugateBFTester{ConjugateKKTModel},
-        KKTStrongBFTester,
+        ConjugateKKTTester,
+        ConjugatePrimalTester,
     ]
 
     @testset "Pair of paths" begin

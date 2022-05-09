@@ -64,7 +64,7 @@ export build_graph, shortest_path, get_path_cost, path_arcs, path_tolled_arcs
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
 
-export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, is_bilevel_feasible, solve
+export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, is_bilevel_feasible, solve, is_strongly_bilevel_feasible
 export ConjugateLinearModel, ConjugateDynamicLinearModel, ConjugateKKTModel
 
 export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath

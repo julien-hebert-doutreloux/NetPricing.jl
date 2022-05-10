@@ -1,0 +1,50 @@
+{
+    "problem": {
+        "V": 5,
+        "A": [{
+            "src": 1,
+            "dst": 3,
+            "cost": 0.0,
+            "toll": true
+        }, {
+            "src": 3,
+            "dst": 5,
+            "cost": 0.0,
+            "toll": true
+        }, {
+            "src": 1,
+            "dst": 2,
+            "cost": 0.0,
+            "toll": false
+        }, {
+            "src": 2,
+            "dst": 3,
+            "cost": 5.0,
+            "toll": false
+        }, {
+            "src": 3,
+            "dst": 4,
+            "cost": 6.0,
+            "toll": false
+        }, {
+            "src": 4,
+            "dst": 5,
+            "cost": 0.0,
+            "toll": false
+        }, {
+            "src": 1,
+            "dst": 5,
+            "cost": 8.0,
+            "toll": false
+        }],
+        "K": [{
+            "orig": 1,
+            "dest": 5,
+            "demand": 1.0
+        }, {
+            "orig": 3,
+            "dest": 5,
+            "demand": 1.0
+        }]
+    }
+}

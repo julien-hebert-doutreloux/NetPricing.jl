@@ -18,7 +18,7 @@ function calculate_bigM_paths(prob::PathPreprocessedProblem; threads=nothing, co
     for (p, path) in enumerate(paths)
         tolled = path_tolled_arcs(path, arcdict, a1set)
         for a in tolled
-            set_demands(cmodel, count_tolled_arcs(parentprob, [path]))
+            set_demands(cmodel, count_tolled_arcs(parentprob, [path]), [a])
             optimize!(cmodel)
             Mp[a1dict[a],p] = value(cmodel.model[:t][a])
         end

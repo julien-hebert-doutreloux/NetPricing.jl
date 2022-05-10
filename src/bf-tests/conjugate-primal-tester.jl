@@ -76,7 +76,7 @@ end
 function is_strongly_bilevel_feasible(tester::ConjugatePrimalTester, paths; set_odpairs=true)
     prob, model = tester.prob, tester.model
     nk = tester.num_commodities
-    na = length(arcs(prob))
+    a1 = tolled_arcs(prob)
 
     set_paths(tester, paths, set_odpairs=set_odpairs)
     
@@ -89,7 +89,7 @@ function is_strongly_bilevel_feasible(tester::ConjugatePrimalTester, paths; set_
 
     # Maximize x of arcs that do not appear in active_arcs
     x = model[:x]
-    @objective(model, Max, sum(x[a,k] for k in 1:nk, a in 1:na if a ∉ active_arcs[k]))
+    @objective(model, Max, sum(x[a,k] for k in 1:nk, a in a1 if a ∉ active_arcs[k]))
 
     # Solve
     # If obj = 0, the paths are strongly bilevel feasible

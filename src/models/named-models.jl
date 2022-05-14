@@ -10,9 +10,13 @@ const VFFormulation = ValueFunctionFormulation
 const PVFFormulation = PathValueFunctionFormulation
 
 # Named models
-function general_model(form_type::Type{GeneralFormulation{P,D}}, probs; bigM_maxpaths=100, kwargs...) where {P,D}
+function general_model(form_type::Type{GeneralFormulation{P,D}}, probs;
+    bigM_maxpaths=100,
+    linearization=ArcLinearization(),
+    kwargs...) where {P,D}
+
     forms = convert.(Formulation, filter!(!isnothing, assign.(form_type, probs; bigM_maxpaths=bigM_maxpaths)))
-    return formulate!(forms; kwargs...)
+    return formulate!(forms, linearization; kwargs...)
 end
 
 standard_model(probs; kwargs...) = general_model(StandardFormulation, probs; kwargs...)

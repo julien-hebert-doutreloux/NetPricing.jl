@@ -53,6 +53,8 @@ include("bigm/bigm-base.jl")
 include("bigm/bigm-path.jl")
 
 include("models/general-formulation.jl")
+include("models/linearizations/commodity-linearization.jl")
+include("models/linearizations/binary-linearization.jl")
 include("models/named-models.jl")
 include("models/formulation-assignment.jl")
 
@@ -76,6 +78,7 @@ export AbstractBFTester, AbstractStrongBFTester, is_bilevel_feasible, is_strongl
 export ConjugateBFTester, ConjugateKKTTester, ConjugatePrimalTester
 
 export PrimalRepresentation, DualRepresentation, PrimalArc, PrimalPath, DualArc, DualPath
+export AbstractLinearization, CommodityLinearization, ArcLinearization, PathLinearization, BinaryLinearization
 export Formulation, GeneralFormulation
 export formulate!, assign, assign_breakpoint
 export general_model, std_model, pastd_model, vf_model, pvf_model

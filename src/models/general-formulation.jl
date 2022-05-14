@@ -20,24 +20,15 @@ dual(form::GeneralFormulation) = form.dual
 problem(form::GeneralFormulation) = parent(problem(primal(form)))
 
 # General formulation implementation
-function Base.append!(model::Model, form::GeneralFormulation, M, N;
-    sdtol=1e-10,        # Strong duality tolerance
-    kwargs...
-    )
-    # Primal + linearization
-    x, primalobj = formulate_primal!(model, primal(form))
-    sumtx = linearization(model, problem(primal(form)), x, M, N)
-
-    # Dual
-    dualobj = formulate_dual!(model, dual(form))
-
-    # Strong duality
-    @constraint(model, primalobj + sumtx ≤ dualobj + sdtol)
-
-    return sumtx * demand(problem(primal(form)))
+function Base.append!(model::Model, form::GeneralFormulation; kwargs...)
+    formulate_primal!(model, primal(form))
+    formulate_dual!(model, dual(form))
+    return
 end
 
 calculate_bigM(form::GeneralFormulation; kwargs...) = calculate_bigM(problem(primal(form)))
+unnormalized_objective_term(form::GeneralFormulation) = dualobj(dual(form)) - primalobj(primal(form))
+objective_term(form::GeneralFormulation) = demand(problem(primal(form))) * unnormalized_objective_term(form)
 
 # Pretty print
 Base.show(io::IO, form::GeneralFormulation{P,D}) where {P,D} = print(io, "GeneralFormulation{$P, $D}(", problem(primal(form)), ")")

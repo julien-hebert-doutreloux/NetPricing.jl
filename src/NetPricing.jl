@@ -58,6 +58,10 @@ include("models/linearizations/binary-linearization.jl")
 include("models/named-models.jl")
 include("models/formulation-assignment.jl")
 
+include("strong-bf-cuts/biclique-cover.jl")
+include("strong-bf-cuts/cut-generation.jl")
+include("strong-bf-cuts/model-augmentation.jl")
+
 include("probgen/probgen.jl")
 include("probgen/topologies.jl")
 
@@ -86,6 +90,8 @@ export general_model, std_model, pastd_model, vf_model, pvf_model
 export StandardFormulation, PathArcStandardFormulation, ValueFunctionFormulation, PathValueFunctionFormulation
 export STDFormulation, PASTDFormulation, VFFormulation, PVFFormulation
 export standard_model, path_arc_standard_model, value_function_model, path_value_function_model
+
+export add_strong_bf_cuts
 
 export generate_problem, grid_graph
 

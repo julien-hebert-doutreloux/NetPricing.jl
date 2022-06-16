@@ -9,6 +9,7 @@ using JuMP, Gurobi
 using DataStructures, IterTools
 using ProgressMeter, Distributed
 using BenchmarkTools, Random
+using Parameters: @with_kw
 
 import Base.Iterators: flatten, product
 import JuMP.Containers: DenseAxisArray
@@ -62,8 +63,10 @@ include("strong-bf-cuts/biclique-cover.jl")
 include("strong-bf-cuts/cut-generation.jl")
 include("strong-bf-cuts/model-augmentation.jl")
 
+include("probgen/probgen-args.jl")
 include("probgen/probgen.jl")
 include("probgen/topologies.jl")
+include("probgen/progressive.jl")
 
 include("misc/default.jl")
 
@@ -93,7 +96,7 @@ export standard_model, path_arc_standard_model, value_function_model, path_value
 
 export add_strong_bf_cuts
 
-export generate_problem, grid_graph
+export generate_problem, grid_graph, generate_progressive_grid
 
 export consecutive_pairs
 

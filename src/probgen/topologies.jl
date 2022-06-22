@@ -28,7 +28,7 @@ function _delaunay_graph_with_coors(num_nodes)
     seeds = Point2D[Point(min_coord + rand() * width, min_coord + rand() * width) for _ in 1:num_nodes]
     sort!(seeds, by=getx)
 
-    return _delaunay_graph_from_seeds(seeds)
+    return _delaunay_graph_from_seeds(seeds), seeds
 end
 
 function _delaunay_graph_from_seeds(seeds)
@@ -41,5 +41,5 @@ function _delaunay_graph_from_seeds(seeds)
         a, b = geta(edge), getb(edge)
         add_edge!(graph, seeds_dict[a], seeds_dict[b])
     end
-    return graph, seeds
+    return graph
 end

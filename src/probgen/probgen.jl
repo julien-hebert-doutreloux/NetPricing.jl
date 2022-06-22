@@ -18,12 +18,12 @@ generate_problem(graph::AbstractGraph, num_commodities, args) =
 generate_problem(graph, num_commodities; kwargs...) = generate_problem(graph, num_commodities, ProblemGenerationArgs(; kwargs...))
 
 function generate_cost(graph::SimpleDiGraph, args::ProblemGenerationArgs)
-    (; cost_dist, max_cost, max_cost_prob, symmetric_cost) = args
+    (; symmetric_cost) = args
     
     weighted_graph = SimpleWeightedDiGraph(nv(graph))
     for edge in edges(graph)
         i, j = src(edge), dst(edge)
-        cost = _random_arc_cost(max_cost_prob, max_cost, cost_dist)
+        cost = _random_arc_cost(args)
 
         add_edge!(weighted_graph, i, j, cost + eps(0.0))
         symmetric_cost && has_edge(weighted_graph, j, i) && add_edge!(weighted_graph, j, i, cost + eps(0.0))
@@ -34,6 +34,7 @@ generate_cost(graph::AbstractGraph, args) = generate_cost(SimpleDiGraph(graph), 
 generate_cost(graph; kwargs...) = generate_cost(graph, ProblemGenerationArgs(; kwargs...))
 
 _random_arc_cost(max_cost_prob, max_cost, cost_dist) = rand() < max_cost_prob ? max_cost : rand(cost_dist)
+_random_arc_cost(args::ProblemGenerationArgs) = _random_arc_cost(args.max_cost_prob, args.max_cost, args.cost_dist)
 
 function generate_tolled_arcs(graph::SimpleWeightedDiGraph, commodities, args::ProblemGenerationArgs)
     (; tolled_proportion, symmetric_tolled, random_tolled_proportion) = args

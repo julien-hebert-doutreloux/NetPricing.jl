@@ -51,41 +51,27 @@ generate_progressive_grid(max_size, min_size, base_num_commodities; kwargs...) =
 
 function generate_progressive_delaunay(num_nodes_array, base_num_commodities, args::ProblemGenerationArgs)
     # Generate the base problem
-    raw_graph, seeds = _delaunay_graph_with_coors(num_nodes_array[1])
-    base_graph = generate_cost(raw_graph, args)
-
-    # Function to evaluate number of nodes inside a window
-    max_width = max_coord - min_coord
-    mid_coord = (max_coord + min_coord) / 2
-    in_window(x::Number, width) = mid_coord - width / 2 <= x <= mid_coord + width / 2
-    in_window(p::Point2D, width) = in_window(getx(p), width) && in_window(gety(p), width)
-    count_nodes_window(width) = count(p -> in_window(p, width), seeds)
+    raw_graph = delaunay_graph(num_nodes_array[1])
+    graph = generate_cost(raw_graph, args)
 
     num_commodities = base_num_commodities
-    prob = generate_problem(base_graph, num_commodities, args)
+    prob = generate_problem(graph, num_commodities, args)
     problems = [prob]
-    last_inv_node_map = Dict(i => i for i in 1:num_nodes_array[1])
 
     # Generate the smaller problems progressively
     for num_nodes in num_nodes_array[2:end]
-        # Find the window that contains the target number of nodes
-        count_fn = w -> count_nodes_window(w) - num_nodes
-        window = binary_root_search(count_fn, 0, max_width)
-
         # Remap the nodes
-        next_nodes = [i for (i, p) in enumerate(seeds) if in_window(p, window)]
+        next_nodes = _reduce_delaunay(graph, num_nodes)
         node_map = Dict(reverse.(enumerate(next_nodes)))
 
-        # Extract the induced subgraph (with the old costs of arcs)
-        next_graph = base_graph[next_nodes]
+        # Make a new graph from the subset of seeds, reuse the old set of arc costs
+        next_graph = graph[next_nodes]
         V = nv(next_graph)
 
         # Increase the number of commodities inversely-proportionally to the number of edges
         # For Delaunay graph, we don't know the number of edges from the number of nodes
-        num_commodities = round(Int, base_num_commodities * ne(base_graph) / ne(next_graph))
-        # We need to translate the last set of commodities to the indices of the base graph
-        last_K = [Commodity(last_inv_node_map[comm.orig], last_inv_node_map[comm.dest], comm.demand) for comm in prob.K]
-        K = _generate_progressive_commodities(base_graph, next_graph, last_K, node_map, num_commodities, args)
+        num_commodities = round(Int, base_num_commodities * ne(raw_graph) * 2 / ne(next_graph))
+        K = _generate_progressive_commodities(graph, next_graph, prob.K, node_map, num_commodities, args)
 
         # Add the tolled arcs (from scratch)
         A = generate_tolled_arcs(next_graph, K, args)
@@ -93,7 +79,7 @@ function generate_progressive_delaunay(num_nodes_array, base_num_commodities, ar
         # Update variables for the next iterations
         prob = Problem(V, A, K)
         push!(problems, prob)
-        last_inv_node_map = Dict(enumerate(next_nodes))
+        graph = next_graph
     end
 
     return problems
@@ -201,3 +187,36 @@ function _generate_progressive_tolled_arcs(graph, last_A, node_map, args::Proble
     A = _convert_to_A(graph, tolled)
     return A
 end
+
+# Remove some nodes from a Delaunay graph, returns the list of the remaining nodes
+function _reduce_delaunay(graph, target)
+    graph = copy(graph)
+    remaining_nodes = collect(1:nv(graph))
+    while nv(graph) > target
+        # Remove the node with the smallest degree
+        i = argmin(degree(graph))
+        rem_vertex!(graph, i)
+        deleteat!(remaining_nodes, i)
+    end
+    return remaining_nodes
+end
+
+# Fill in the old costs or generate new one for new pairs
+function _fill_costs(graph::SimpleDiGraph, arc_costs_dict, args::ProblemGenerationArgs)
+    (; symmetric_cost) = args
+    
+    weighted_graph = SimpleWeightedDiGraph(nv(graph))
+    for edge in edges(graph)
+        i, j = src(edge), dst(edge)
+        if !haskey(arc_costs_dict, (i, j))
+            c = _random_arc_cost(args)
+            arc_costs_dict[(i, j)] = c
+            symmetric_cost && (arc_costs_dict[(j, i)] = c)
+        end
+        cost = arc_costs_dict[(i, j)]
+        add_edge!(weighted_graph, i, j, cost + eps(0.0))
+        symmetric_cost && has_edge(weighted_graph, j, i) && add_edge!(weighted_graph, j, i, cost + eps(0.0))
+    end
+    return weighted_graph
+end
+_fill_costs(graph::AbstractGraph, arc_costs_dict, args) = _fill_costs(SimpleDiGraph(graph), arc_costs_dict, args)

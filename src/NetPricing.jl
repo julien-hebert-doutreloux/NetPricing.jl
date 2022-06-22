@@ -10,6 +10,7 @@ using DataStructures, IterTools
 using ProgressMeter, Distributed
 using BenchmarkTools, Random
 using Parameters: @with_kw
+using VoronoiDelaunay
 
 import Base.Iterators: flatten, product
 import JuMP.Containers: DenseAxisArray
@@ -24,6 +25,7 @@ include("problems/tollsdict.jl")
 include("misc/lazyenv.jl")
 include("misc/utils.jl")
 include("misc/consecutive-pairs.jl")
+include("misc/binary-search.jl")
 
 include("components/graph.jl")
 include("components/graphtolls.jl")
@@ -96,7 +98,8 @@ export standard_model, path_arc_standard_model, value_function_model, path_value
 
 export add_strong_bf_cuts
 
-export generate_problem, grid_graph, generate_progressive_grid
+export generate_problem, grid_graph, delaunay_graph, voronoi_graph
+export generate_progressive_grid, generate_progressive_delaunay
 
 export consecutive_pairs
 

@@ -51,17 +51,25 @@ generate_progressive_grid(max_size, min_size, base_num_commodities; kwargs...) =
 
 function generate_progressive_delaunay(num_nodes_array, base_num_commodities, args::ProblemGenerationArgs)
     # Generate the base problem
-    raw_graph = delaunay_graph(num_nodes_array[1])
+    raw_graph, seeds = _delaunay_graph_with_coors(num_nodes_array[1])
     graph = generate_cost(raw_graph, args)
 
     num_commodities = base_num_commodities
     prob = generate_problem(graph, num_commodities, args)
     problems = [prob]
 
+    # Routine to calculate the central seed (used as the first node in the augmentation)
+    function get_central_seed()
+        avg_x = sum(getx, seeds) / length(seeds)
+        avg_y = sum(gety, seeds) / length(seeds)
+        return argmin(map(p -> (getx(p) - avg_x)^2 + (gety(p) - avg_y)^2, seeds))
+    end
+    central = get_central_seed()
+
     # Generate the smaller problems progressively
     for num_nodes in num_nodes_array[2:end]
         # Remap the nodes
-        next_nodes = _reduce_delaunay(graph, num_nodes)
+        next_nodes = _augment_delaunay(graph, num_nodes, central)
         node_map = Dict(reverse.(enumerate(next_nodes)))
 
         # Make a new graph from the subset of seeds, reuse the old set of arc costs
@@ -80,6 +88,10 @@ function generate_progressive_delaunay(num_nodes_array, base_num_commodities, ar
         prob = Problem(V, A, K)
         push!(problems, prob)
         graph = next_graph
+
+        # Recalculate central seed
+        seeds = seeds[next_nodes]
+        central = get_central_seed()
     end
 
     return problems
@@ -188,7 +200,7 @@ function _generate_progressive_tolled_arcs(graph, last_A, node_map, args::Proble
     return A
 end
 
-# Remove some nodes from a Delaunay graph, returns the list of the remaining nodes
+# Remove some nodes from a Delaunay graph, returns the list of the remaining nodes (obsolete)
 function _reduce_delaunay(graph, target)
     graph = copy(graph)
     remaining_nodes = collect(1:nv(graph))
@@ -201,7 +213,7 @@ function _reduce_delaunay(graph, target)
     return remaining_nodes
 end
 
-# Fill in the old costs or generate new one for new pairs
+# Fill in the old costs or generate new one for new pairs (obsolete)
 function _fill_costs(graph::SimpleDiGraph, arc_costs_dict, args::ProblemGenerationArgs)
     (; symmetric_cost) = args
     
@@ -220,3 +232,23 @@ function _fill_costs(graph::SimpleDiGraph, arc_costs_dict, args::ProblemGenerati
     return weighted_graph
 end
 _fill_costs(graph::AbstractGraph, arc_costs_dict, args) = _fill_costs(SimpleDiGraph(graph), arc_costs_dict, args)
+
+# Augment Delaunay graph
+function _augment_delaunay(graph, target, first)
+    chosen = [first]
+    remaining = setdiff(1:nv(graph), first)
+    for _ in 2:target
+        # We add the node with the highest number of connections to the current subset of nodes
+        # If there're ties, choose the node with highest degree
+        criteria = map(remaining) do i
+            num_connections = count(j -> has_edge(graph, i, j), chosen)     # Number of connections to to current subset
+            node_degree = degree(graph, i)
+            return num_connections, node_degree
+        end
+
+        next_node = remaining[argmax(criteria)]
+        push!(chosen, next_node)
+        setdiff!(remaining, next_node)
+    end
+    return chosen
+end

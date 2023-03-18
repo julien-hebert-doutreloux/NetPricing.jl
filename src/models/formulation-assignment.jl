@@ -4,10 +4,12 @@ assign(::Any, ::EmptyProblem; kwargs...) = nothing
 # Assign a formulation to a problem type, fallback to standard formulation
 # Integrated with improved big-M on PathPreprocessedProblem
 function assign(formulation::Type{GeneralFormulation{P,D}}, prob::PathPreprocessedProblem;
-    bigM_maxpaths=100, kwargs...) where {P,D}
+    bigM_difference=true, kwargs...) where {P,D}
 
     form = formulation(prob)
-    (length(paths(prob)) <= bigM_maxpaths) && (form = BigMPath(form, prob))
+    if bigM_difference
+        form = BigMDifference(form, prob)
+    end
     return form
 end
 assign(::Type{GeneralFormulation{P,D}}, prob::AbstractCommodityProblem; kwargs...) where {P,D} = StandardFormulation(prob)

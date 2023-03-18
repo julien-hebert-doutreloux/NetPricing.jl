@@ -54,6 +54,7 @@ include("models/dual-representation.jl")
 
 include("bigm/bigm-base.jl")
 include("bigm/bigm-path.jl")
+include("bigm/bigm-difference.jl")
 
 include("models/general-formulation.jl")
 include("models/linearizations/commodity-linearization.jl")

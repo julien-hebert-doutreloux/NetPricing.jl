@@ -1,5 +1,6 @@
 @testset "Conjugate solver" begin
     prob = read_problem("problems/partialparallel3.json")
+    pprobs = preprocess(prob)
     known_objs = [
         28 19 11  8  6  6;
         18 10  6  3  3  3;
@@ -16,11 +17,15 @@
          8  7  4  0  0  0;
          0  3  4  0  0  0
     ]
-    solvers = [ConjugateLinearModel, ConjugateDynamicLinearModel, ConjugateKKTModel]
+    solvers = [
+        () -> ConjugateLinearModel(prob),
+        () -> ConjugateDynamicLinearModel(prob),
+        () -> ConjugateKKTModel(prob),
+        () -> ConjugatePreprocessedModel(pprobs)]
 
     @testset "Solution with priority" begin
         for solver in solvers
-            cmodel = solver(prob)
+            cmodel = solver()
             for w1 in 0:5, w2 in 0:5
                 obj, t = solve(cmodel, Dict(1 => w1, 2 => w2))              # Default priority
                 rev = t' * [w1, w2]
@@ -32,7 +37,7 @@
 
     @testset "Solution without priority" begin
         for solver in solvers
-            cmodel = solver(prob)
+            cmodel = solver()
             for w1 in 0:5, w2 in 0:5
                 obj, t = solve(cmodel, Dict(1 => w1, 2 => w2), BitSet())    # No priority
                 rev = t' * [w1, w2]

@@ -39,41 +39,47 @@ function run_benchmark_enumeration(probfile="problems/paper/d30-01.json", numpat
     @printf "Speed: %-.0f paths/s\n" (totalnumpaths / time)
 end
 
-function run_benchmark_conjugate_solver(probfile="problems/paper/d30-01.json")
+function run_benchmark_conjugate_solver(probfile="problems/paper/d30-01.json"; threads=nothing)
     prob = read_problem(probfile)
     a1 = tolled_arcs(prob)
     a1set = BitSet(a1)
 
     println("Preprocessing...")
     pprobs = preprocess(prob, maxpaths=10000)
-    maxk = Dict(a1 .=> 0)
+    max_w = Dict(a1 .=> 0.)
     for pprob in pprobs
-        Amap = arcmap(pprob)
+        Amap = used_arcs(pprob)
         for a in Amap ∩ a1set
-            maxk[a] += 1
+            max_w[a] += demand(pprob)
         end
     end
     println()
 
     function make_demands()
-        return Dict(a => rand(0:maxk[a]) for a in a1)
+        return Dict(a => rand() * max_w[a] for a in a1)
     end
     
     println("Linear Solver")
-    sLinear = NetPricing.ConjugateLinearModel(prob)
+    sLinear = NetPricing.ConjugateLinearModel(prob; threads)
     tLinear = @benchmark solve($sLinear, d) setup=(d = $make_demands())
     display(tLinear)
     println()
 
     println("Dynamic Linear Solver")
-    sDynamic = NetPricing.ConjugateDynamicLinearModel(prob)
+    sDynamic = NetPricing.ConjugateDynamicLinearModel(prob; threads)
     tDynamic = @benchmark solve($sDynamic, d) setup=(d = $make_demands())
     display(tDynamic)
     println()
-
-    println("KKT Solver")
-    sKKT = NetPricing.ConjugateKKTModel(prob)
-    tKKT = @benchmark solve($sKKT, d) setup=(d = $make_demands())
-    display(tKKT)
+    
+    println("Preprocessed Linear Solver")
+    sPreprocessed = NetPricing.ConjugatePreprocessedModel(pprobs; threads)
+    tPreprocessed = @benchmark solve($sPreprocessed, d) setup=(d = $make_demands())
+    display(tPreprocessed)
     println()
+
+    # println("KKT Solver")
+    # sKKT = NetPricing.ConjugateKKTModel(prob)
+    # tKKT = @benchmark solve($sKKT, d) setup=(d = $make_demands())
+    # display(tKKT)
+    # println()
 end

@@ -41,6 +41,7 @@ include("conjugate-solvers/abstract.jl")
 include("conjugate-solvers/linear-model.jl")
 include("conjugate-solvers/dynamic-linear-model.jl")
 include("conjugate-solvers/kkt-model.jl")
+include("conjugate-solvers/preprocessed-model.jl")
 
 include("bf-tests/abstract.jl")
 include("bf-tests/conjugate-tester.jl")
@@ -82,7 +83,7 @@ export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
 
 export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, solve
-export ConjugateLinearModel, ConjugateDynamicLinearModel, ConjugateKKTModel
+export ConjugateLinearModel, ConjugateDynamicLinearModel, ConjugateKKTModel, ConjugatePreprocessedModel
 
 export AbstractBFTester, AbstractStrongBFTester, is_bilevel_feasible, is_strongly_bilevel_feasible
 export ConjugateBFTester, ConjugateKKTTester, ConjugatePrimalTester

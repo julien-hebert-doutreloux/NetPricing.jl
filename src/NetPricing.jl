@@ -37,6 +37,11 @@ include("components/preprocessing-spgm.jl")
 include("components/preprocessing-light.jl")
 include("components/preprocessing.jl")
 
+include("models/formulation.jl")
+include("models/model-components.jl")
+include("models/primal-representation.jl")
+include("models/dual-representation.jl")
+
 include("conjugate-solvers/abstract.jl")
 include("conjugate-solvers/linear-model.jl")
 include("conjugate-solvers/dynamic-linear-model.jl")
@@ -47,11 +52,6 @@ include("bf-tests/abstract.jl")
 include("bf-tests/conjugate-tester.jl")
 include("bf-tests/conjugate-kkt-tester.jl")
 include("bf-tests/conjugate-primal-tester.jl")
-
-include("models/formulation.jl")
-include("models/model-components.jl")
-include("models/primal-representation.jl")
-include("models/dual-representation.jl")
 
 include("bigm/bigm-base.jl")
 include("bigm/bigm-path.jl")

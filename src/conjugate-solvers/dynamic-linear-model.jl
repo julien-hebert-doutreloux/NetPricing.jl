@@ -90,7 +90,7 @@ function JuMP.optimize!(cmodel::ConjugateDynamicLinearModel)
     last_t = zeros(length(a1))
     last_path_a1 = copy(nulltollarcs)
 
-    for i in 1:100
+    for i in 1:10000
         optimize!(model)
 
         # Check if t is not changed
@@ -129,7 +129,7 @@ function JuMP.optimize!(cmodel::ConjugateDynamicLinearModel)
         end
 
         # Fail-safe
-        @assert(i < 100, "Too many iterations in optimize!(::ConjugateDynamicLinearModel)")
+        @assert(i < 10000, "Too many iterations in optimize!(::ConjugateDynamicLinearModel)")
     end
 
     return

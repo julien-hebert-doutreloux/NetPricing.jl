@@ -21,7 +21,8 @@
         () -> ConjugateLinearModel(prob),
         () -> ConjugateDynamicLinearModel(prob),
         () -> ConjugateKKTModel(prob),
-        () -> ConjugatePreprocessedModel(pprobs)]
+        () -> ConjugatePreprocessedModel(DualArc, pprobs),
+        () -> ConjugatePreprocessedModel(DualPath, pprobs)]
 
     @testset "Solution with priority" begin
         for solver in solvers

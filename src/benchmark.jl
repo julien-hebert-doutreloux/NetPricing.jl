@@ -71,10 +71,16 @@ function run_benchmark_conjugate_solver(probfile="problems/paper/d30-01.json"; t
     display(tDynamic)
     println()
     
-    println("Preprocessed Linear Solver")
-    sPreprocessed = NetPricing.ConjugatePreprocessedModel(pprobs; threads)
-    tPreprocessed = @benchmark solve($sPreprocessed, d) setup=(d = $make_demands())
-    display(tPreprocessed)
+    println("Preprocessed DualArc Solver")
+    sPreprocArc = NetPricing.ConjugatePreprocessedModel(DualArc, pprobs; threads)
+    tPreprocArc = @benchmark solve($sPreprocArc, d) setup=(d = $make_demands())
+    display(tPreprocArc)
+    println()
+
+    println("Preprocessed DualPath Solver")
+    sPreprocPath = NetPricing.ConjugatePreprocessedModel(DualPath, pprobs; threads)
+    tPreprocPath = @benchmark solve($sPreprocPath, d) setup=(d = $make_demands())
+    display(tPreprocPath)
     println()
 
     # println("KKT Solver")

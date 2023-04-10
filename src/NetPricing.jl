@@ -51,6 +51,7 @@ include("forward-solvers/hybrid-solver.jl")
 include("conjugate-solvers/abstract.jl")
 include("conjugate-solvers/linear-model.jl")
 include("conjugate-solvers/dynamic-linear-model.jl")
+include("conjugate-solvers/dynamic-hybrid-model.jl")
 include("conjugate-solvers/kkt-model.jl")
 include("conjugate-solvers/preprocessed-model.jl")
 
@@ -92,7 +93,7 @@ export AbstractForwardSolver, set_tolls, wvals, solve
 export ForwardHybridSolver
 
 export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, solve
-export ConjugateLinearModel, ConjugateDynamicLinearModel, ConjugateKKTModel, ConjugatePreprocessedModel
+export ConjugateLinearModel, ConjugateDynamicLinearModel, ConjugateDynamicHybridModel, ConjugateKKTModel, ConjugatePreprocessedModel
 
 export AbstractBFTester, AbstractStrongBFTester, is_bilevel_feasible, is_strongly_bilevel_feasible
 export ConjugateBFTester, ConjugateKKTTester, ConjugatePrimalTester

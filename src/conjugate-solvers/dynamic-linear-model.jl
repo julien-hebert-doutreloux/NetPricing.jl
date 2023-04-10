@@ -87,7 +87,7 @@ function JuMP.optimize!(cmodel::ConjugateDynamicLinearModel)
     L, t = model[:L], model[:t]
 
     # Start solving
-    last_t = zeros(length(a1))
+    last_tvals = Dict(a => 0. for a in a1)
     last_path_a1 = copy(nulltollarcs)
 
     for i in 1:10000
@@ -95,11 +95,8 @@ function JuMP.optimize!(cmodel::ConjugateDynamicLinearModel)
 
         # Check if t is not changed
         tvals = value.(t).data
-        all(isapprox.(last_t, tvals)) && break
-
-        last_tvals = Dict(a1 .=> last_t)
-        current_tvals = Dict(a1 .=> tvals)
-        last_t = tvals
+        all(isapprox(last_tvals[a], t) for (a, t) in zip(a1, tvals)) && break
+        current_tvals = Dict(zip(a1, tvals))
 
         # Set the current tolls to the graph
         set_tolls!(graph, prob, current_tvals)
@@ -127,6 +124,8 @@ function JuMP.optimize!(cmodel::ConjugateDynamicLinearModel)
 
             @constraint(model, L[k] ≤ basecost + sum(t[a] for a in path_a1))
         end
+
+        last_tvals = current_tvals
 
         # Fail-safe
         @assert(i < 10000, "Too many iterations in optimize!(::ConjugateDynamicLinearModel)")

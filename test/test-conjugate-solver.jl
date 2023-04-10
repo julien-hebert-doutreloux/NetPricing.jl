@@ -20,6 +20,7 @@
     solvers = [
         () -> ConjugateLinearModel(prob),
         () -> ConjugateDynamicLinearModel(prob),
+        () -> ConjugateDynamicHybridModel(pprobs),
         () -> ConjugateKKTModel(prob),
         () -> ConjugatePreprocessedModel(DualArc, pprobs),
         () -> ConjugatePreprocessedModel(DualPath, pprobs)]

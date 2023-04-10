@@ -70,6 +70,14 @@ function run_benchmark_conjugate_solver(probfile="problems/paper/d30-01.json"; t
     tDynamic = @benchmark solve($sDynamic, d) setup=(d = $make_demands())
     display(tDynamic)
     println()
+
+    for maxpaths in [0, 100, 1000, 10000]
+        println("Dynamic Hybrid Solver - $maxpaths paths")
+        sDynamicHybrid = NetPricing.ConjugateDynamicHybridModel(pprobs; maxpaths, threads)
+        tDynamicHybrid = @benchmark solve($sDynamicHybrid, d) setup=(d = $make_demands())
+        display(tDynamicHybrid)
+        println()
+    end
     
     println("Preprocessed DualArc Solver")
     sPreprocArc = NetPricing.ConjugatePreprocessedModel(DualArc, pprobs; threads)

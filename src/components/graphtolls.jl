@@ -19,6 +19,8 @@ function set_tolls!(graph::AbstractGraph, preprob::PreprocessedProblem, tolls::A
     return _set_tolls_abstract!(graph, preprob, mappedtolls)
 end
 
+set_tolls!(graph::AbstractGraph, preprob::PathPreprocessedProblem, tolls::AbstractTollsDict) = set_tolls!(graph, preprob.pprob, tolls)
+
 ## Reset tolls to 0
 reset_tolls!(graph::AbstractGraph, prob::AbstractProblem) = _set_tolls_abstract!(graph, prob, zero_tolls(prob))
 

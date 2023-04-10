@@ -89,3 +89,29 @@ function run_benchmark_conjugate_solver(probfile="problems/paper/d30-01.json"; t
     # display(tKKT)
     # println()
 end
+
+function run_benchmark_forward_solver(probfile="problems/paper/d30-01.json")
+    prob = read_problem(probfile)
+    a1 = tolled_arcs(prob)
+
+    println("Preprocessing...")
+    pprobs = preprocess(prob, maxpaths=10000)
+    filter!(p -> !(p isa EmptyProblem), pprobs)
+
+    println("Calculate big-M...")
+    Ms = [prob isa PathPreprocessedProblem ? calculate_bigM_difference(prob) : calculate_bigM(prob) for prob in pprobs]
+    N = Dict(a1 .=> max.(collect.(maximum.(Ms, dims=2))...))
+    println()
+
+    function make_tolls()
+        return Dict(a => rand() * N[a] for a in a1)
+    end
+
+    for maxpaths in [0, 10, 100, 1000, 2000, 5000, 10000]
+        println("Hybrid Solver - $maxpaths paths")
+        solver = NetPricing.ForwardHybridSolver(pprobs; maxpaths)
+        time = @benchmark solve($solver, t) setup=(t = $make_tolls())
+        display(time)
+        println()
+    end
+end

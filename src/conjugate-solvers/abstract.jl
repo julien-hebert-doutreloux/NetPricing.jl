@@ -5,10 +5,10 @@ set_odpairs(cmodel::AbstractConjugateSolver, commodities::AbstractVector{Commodi
     set_odpairs(cmodel, [(comm.orig, comm.dest) for comm in commodities])
 
 set_odpairs(cmodel::AbstractConjugateSolver, ks::AbstractVector{Int}) =
-    set_odpairs(cmodel, cmodel.prob.K[ks])
+    set_odpairs(cmodel, problem(cmodel).K[ks])
 
 function set_demands(cmodel::AbstractConjugateSolver, demands)
-    set_demands(cmodel, demands, keys(demands))
+    set_demands(cmodel, demands, tolled_arcs(problem(cmodel)))
 end
 
 # Solve for g(w) and t

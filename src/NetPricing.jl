@@ -42,6 +42,12 @@ include("models/model-components.jl")
 include("models/primal-representation.jl")
 include("models/dual-representation.jl")
 
+include("forward-solvers/abstract.jl")
+include("forward-solvers/abstract-commodity.jl")
+include("forward-solvers/graph-solver.jl")
+include("forward-solvers/path-solver.jl")
+include("forward-solvers/hybrid-solver.jl")
+
 include("conjugate-solvers/abstract.jl")
 include("conjugate-solvers/linear-model.jl")
 include("conjugate-solvers/dynamic-linear-model.jl")
@@ -81,6 +87,9 @@ export read_problem, nodes, arcs, arcmap, paths, tolled_arcs, tollfree_arcs, src
 export build_graph, shortest_path, get_path_cost, path_arcs, path_tolled_arcs
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
+
+export AbstractForwardSolver, set_tolls, wvals, solve
+export ForwardHybridSolver
 
 export AbstractConjugateSolver, set_odpairs, set_demands, set_paths, tvals, solve
 export ConjugateLinearModel, ConjugateDynamicLinearModel, ConjugateKKTModel, ConjugatePreprocessedModel

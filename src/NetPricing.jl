@@ -85,6 +85,7 @@ include("benchmark.jl")
 
 export AbstractProblem, AbstractCommodityProblem, Problem, AbstractPreprocessedProblem, PreprocessedProblem, PathPreprocessedProblem, UnprocessedProblem, ProblemArc, Commodity
 export read_problem, nodes, arcs, arcmap, paths, tolled_arcs, tollfree_arcs, srcdst_to_index, srcdst_to_cost, tolled_srcdst_to_index
+export used_nodes, used_arcs
 export build_graph, shortest_path, get_path_cost, path_arcs, path_tolled_arcs
 export enumerate_bilevel_feasible
 export preprocess, preprocess_path, preprocess_spgm
@@ -103,6 +104,7 @@ export AbstractLinearization, CommodityLinearization, ArcLinearization, PathLine
 export Formulation, GeneralFormulation
 export formulate!, assign, assign_breakpoint
 export general_model, std_model, pastd_model, vf_model, pvf_model
+export problem, primal, dual
 
 export StandardFormulation, PathArcStandardFormulation, ValueFunctionFormulation, PathValueFunctionFormulation
 export STDFormulation, PASTDFormulation, VFFormulation, PVFFormulation

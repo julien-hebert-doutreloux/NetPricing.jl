@@ -3,7 +3,7 @@
 Julia library for the Network Pricing Problem (NPP). For more details, read our papers
 \[[1](#readme-ref1), [2](#readme-ref2)\].
 
-## Tables of Contents <!-- omit from toc -->
+## Table of Contents <!-- omit from toc -->
 
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)

@@ -30,7 +30,11 @@ function linearize_commodity_primal(model::Model, linearization::CommodityLinear
     tx = @variable(model, [a=a1], lower_bound = 0, base_name="tx[$k]")
     t = remap_t(model, prob)
 
-    sumtx = sum(tx)
+    if isempty(tx)
+        sumtx = 0.0
+    else
+        sumtx = sum(tx)
+    end
 
     a1dict = Dict(a => i for (i, a) in enumerate(tolled_arcs(parentprob)))
     mapped_a1 = [a1dict[a] for a in Amap[a1]]

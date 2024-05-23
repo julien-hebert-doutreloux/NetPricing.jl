@@ -30,3 +30,17 @@ const vf_model = value_function_model
 
 path_value_function_model(probs; kwargs...) = general_model(PathValueFunctionFormulation, probs; kwargs...)
 const pvf_model = path_value_function_model
+
+
+
+# Custom
+function custom_model(form_type::Type{GeneralFormulation{P,D}}, probs, M, N; option=0,
+    linearization=ArcLinearization(),
+    kwargs...) where {P,D}
+
+    forms = convert.(Formulation, filter!(!isnothing, assign.(form_type, probs)))
+    return custom_formulate!(forms, linearization, M, N, option; kwargs...)
+end
+
+custom_standard_model(probs, M, N;option, kwargs...) = custom_model(StandardFormulation, probs, M, N;option, kwargs...)
+const cst_model = custom_standard_model

@@ -163,7 +163,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		
 		println("size(λ_full)\t", size(λ_full))
 		println("size(γA)\t", size(γA))
-		println("size(c)\t", size(c))
+		println("size(c)\t\t", size(c))
 		println("size(γc)\t", size(γc))
 		println("size(γt)\t", size(γt))
 		println("size(x)\t", size(x))

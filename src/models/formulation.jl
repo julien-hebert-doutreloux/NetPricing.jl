@@ -165,7 +165,8 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		etrans = trans["A"]# Edge transformation (before:after)
 		
 		c  = cost_vector(prob)      # constant cost vector from the original problem
-		γc = projection(etrans, c)  # Projection of c in transformed space
+		γc_min, γc_avg, γc_max  = projection(etrans, c)  # Projection of c in transformed space
+		γc = γc_min
 		println("γc")
 		
 		

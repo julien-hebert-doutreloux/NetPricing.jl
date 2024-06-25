@@ -162,8 +162,10 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		
 		@constraint(model, γA' * λ_full .≤ γc + γt)
 		println("γ(A)' * λ~ <= γ(c) + γ(t)")
+		
 		@constraint(model, c' * x + sumtx ≤ b' * γ_inv_λ_full)
 		println("(c + t)' * x <= b' * γ^-1(λ~)")
+		
 		@constraint(model, (γc + γt)' * x_full ≤ γbfull' * λ_full)
 		println("(γ(c) + γ(t))' * x~ <= γ(b)' * λ~")
 	end

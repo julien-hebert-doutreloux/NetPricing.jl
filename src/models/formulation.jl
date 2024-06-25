@@ -174,6 +174,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 
 		nv_ = size(γA)[1]   # number of node in the transformed space
 		na_ = size(γA)[2]   # number of arcs in the transformed space
+		nv = nodes(prob)
 		###############
 		
 
@@ -216,7 +217,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
     end
 
 	if option==6
-		custom_linearize!(model, linearization, forms, Ms, N, rtrans, vtrans, ktrans, nv_,na_, c, γc, γA, γt; sdtol=sdtol)
+		custom_linearize!(model, linearization, forms, Ms, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt; sdtol=sdtol)
 		print("custom_linearize")
 	else
 		# Linearize (and strong duality)

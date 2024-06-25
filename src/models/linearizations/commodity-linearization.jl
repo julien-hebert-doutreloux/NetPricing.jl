@@ -145,7 +145,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
  	println(γbfull)
  	println("projection")
  	
- 	if γbfull in ktrans              # it is possible that the problem become infeasible in the transformed space
+ 	if haskey(ktrans, γbfull)              # it is possible that the problem become infeasible in the transformed space
 	
 		k_ = ktrans[γbfull]               # retrieve the associated transformed problem
 		println("k_")

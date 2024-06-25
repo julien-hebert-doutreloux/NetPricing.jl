@@ -185,6 +185,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 			bfull = expand_b(VV, nv_, v) 
 			ktrans[bfull] = k
 		end
+		println(ktrans)
 		println("ktrans")
 
 		γa1 = []         # tolled edge index in the transformed space

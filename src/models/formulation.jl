@@ -217,6 +217,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 
 	if option==6
 		custom_linearize!(model, linearization, forms, Ms, N, rtrans, vtrans, ktrans, nv_,na_, c, γc, γA, γt; sdtol=sdtol)
+		print("custom_linearize")
 	else
 		# Linearize (and strong duality)
 		linearize!(model, linearization, forms, Ms, N; sdtol=sdtol) #NetPricing.

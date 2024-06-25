@@ -91,7 +91,7 @@ end
 
 function custom_linearize_commodity!(model::Model, linearization::CommodityLinearization, form::Formulation, M, N, rtrans, vtrans, ktrans, nv_,na_, c, γc, γA, γt; sdtol=1e-10)
     # Linearization
-    sumtx = custom_linearize_commodity_primal(model, linearization, primal(form), M, N, rtrans, vtrans, ktrans, nv_,na_, c, γc, γA)
+    sumtx = custom_linearize_commodity_primal(model, linearization, primal(form), M, N, rtrans, vtrans, ktrans, nv_,na_, c, γc, γA, γt)
     # Strong duality
     @constraint(model, sumtx <= unnormalized_objective_term(form) + sdtol)
     return sumtx

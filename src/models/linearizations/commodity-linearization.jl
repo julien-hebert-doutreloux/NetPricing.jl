@@ -82,22 +82,22 @@ function linearize_commodity_extra(::EnvelopOnly, ::PrimalRepresentation) end
 ########################## CUSTOM
 
 #### Custom
-function custom_linearize!(model::Model, linearization::CommodityLinearization, forms, Ms, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt; sdtol=1e-10)
+function custom_linearize!(model::Model, linearization::CommodityLinearization, forms, Ms, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1; sdtol=1e-10)
     for (form, M) in zip(forms, Ms)
-        custom_linearize_commodity!(model, linearization, form, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt; sdtol=sdtol)
+        custom_linearize_commodity!(model, linearization, form, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1; sdtol=sdtol)
     end
     return
 end
 
-function custom_linearize_commodity!(model::Model, linearization::CommodityLinearization, form::Formulation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt; sdtol=1e-10)
+function custom_linearize_commodity!(model::Model, linearization::CommodityLinearization, form::Formulation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1; sdtol=1e-10)
     # Linearization
-    sumtx = custom_linearize_commodity_primal(model, linearization, primal(form), M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt)
+    sumtx = custom_linearize_commodity_primal(model, linearization, primal(form), M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1)
     # Strong duality
     @constraint(model, sumtx <= unnormalized_objective_term(form) + sdtol)
     return sumtx
 end
 
-function custom_linearize_commodity_primal(model::Model, linearization::CommodityLinearization, primal::PrimalRepresentation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt)
+function custom_linearize_commodity_primal(model::Model, linearization::CommodityLinearization, primal::PrimalRepresentation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1)
 
     prob = problem(primal)
     parentprob = parent(prob)
@@ -160,7 +160,8 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		x_full = expand_b(rtrans.Amap[k_], na_, x_)       # optimal solution path in transformed problem 
 		println("x_full")
 		
-		γtfull = expand_b(γt.index, γt.value)
+		println(γt)
+		γtfull = expand_b(γa1, na_, γt)
 		println("γtfull")
 		println("size(γtfull)\t", size(γtfull))
 		

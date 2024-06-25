@@ -219,7 +219,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
     end
 
 	if option==6
-		custom_linearize!(model, linearization, forms, Ms, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt; sdtol=sdtol)
+		custom_linearize!(model, linearization, forms, Ms, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt,γa1; sdtol=sdtol)
 		print("custom_linearize")
 	else
 		# Linearize (and strong duality)

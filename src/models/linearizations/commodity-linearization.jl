@@ -171,7 +171,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		println("typeof, size b           \t", typeof(b), "\t", size(b))
 		println("typeof, size γ_inv_λ_full\t", typeof(γ_inv_λ_full), "\t", size(γ_inv_λ_full))
 		println("typeof, size γbfull      \t", typeof(γbfull), "\t", size(γbfull))
-		println("x\t", x)
+		println("x\t", primal.x)
 		prod1 = value.(γA' * λ_full)
 		
 		for i in γa1

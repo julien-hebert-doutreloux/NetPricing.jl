@@ -158,7 +158,6 @@ function formulate!(forms::Vector{<:Formulation}, linearization::AbstractLineari
 		@variable(model, 0 ≤ t[a=a1], upper_bound = U[a1dict[a]])
 		N = U
 		#println("option 5")
-	end
 	elseif option == 6 & rtrans != nothing & trans != nothing
 		
 		c  = cost_vector(prob)      # constant cost vector from the original problem

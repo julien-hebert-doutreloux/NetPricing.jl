@@ -172,11 +172,12 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		println("size(γ_inv_λ_full)\t", size(γ_inv_λ_full))
 		println("size(γbfull)\t", size(γbfull))
 
-		for i in range(1,na_)
+		test = γA' * λ_full
+		for i in range(1, na_)
 			if i in γa1
-				@constraint(model, (γA' * λ_full)[i] ≤ γc[i] + γt[i])
+				@constraint(model, test ≤ γc[i] + γt[i])
 			else
-				println((γA' * λ_full)[i] ≤ γc[i])
+				println(test≤ γc[i])
 				#@constraint(model, (γA' * λ_full)[i] ≤ γc[i]) # suppose to be true
 			end
 		end

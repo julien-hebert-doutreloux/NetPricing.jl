@@ -172,7 +172,7 @@ function formulate!(forms::Vector{<:Formulation}, linearization::AbstractLineari
 		
 		# in kwargs		
 		vtrans = trans["V"]# Vertex transformation (before:after)
-		etrans = trans ["A"]# Edge transformation (before:after)
+		etrans = trans["A"]# Edge transformation (before:after)
 		#rtrans # result from a transformed problem
 
 		ktrans = Dict()     # mapping between full b~ and its associated index k (b~:after)

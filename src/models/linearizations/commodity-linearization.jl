@@ -84,7 +84,7 @@ function linearize_commodity_extra(::EnvelopOnly, ::PrimalRepresentation) end
 #### Custom
 function custom_linearize!(model::Model, linearization::CommodityLinearization, forms, Ms, N, rtrans, vtrans, ktrans, γa1dict, nv_,na_, c, γc, γA, γa1; sdtol=1e-10)
     for (form, M) in zip(forms, Ms)
-        custom_linearize_commodity!(model, linearization, form, M, N, rtrans, vtrans, ktrans, γa1dict, nv_,na_, c, γc, γA, γa1 sdtol=sdtol)
+        custom_linearize_commodity!(model, linearization, form, M, N, rtrans, vtrans, ktrans, γa1dict, nv_,na_, c, γc, γA, γa1; sdtol=sdtol)
     end
     return
 end

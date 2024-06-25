@@ -162,28 +162,21 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		
 
 		
-		println("size(λ_full)\t", size(λ_full))
-		println("size(γA)\t", size(γA))
-		println("size(c)\t\t", size(c))
-		println("size(γc)\t", size(γc))
-		println("size(γt)\t", size(γt))
-		println("size(x)\t\t", size(x))
-		println("size(b)\t\t", size(b))
-		println("size(γ_inv_λ_full)\t", size(γ_inv_λ_full))
-		println("size(γbfull)\t", size(γbfull))
+		println("typeof, size λ_full      \t", typeof(λ_full), "\t "size(λ_full))
+		println("typeof, size γA          \t", typeof(γA), "\t", size(γA))
+		println("typeof, size c           \t", typeof(c), "\t", size(c))
+		println("typeof, size γc          \t", typeof(γc), "\t", size(γc))
+		println("typeof, size γt          \t", typeof(γt), "\t", size(γt))
+		println("typeof, size x           \t", typeof(x), "\t", size(x))
+		println("typeof, size b           \t", typeof(b), "\t", size(b))
+		println("typeof, size γ_inv_λ_full\t", typeof(γ_inv_λ_full), "\t", size(γ_inv_λ_full))
+		println("typeof, size γbfull      \t", typeof(γbfull), "\t", size(γbfull))
 
-		test = value.(γA' * λ_full)
-		println(test)
-		for i in range(1, na_)
-			if i in γa1
-				println(i, test[i], γc[i], γt[i])
-				@constraint(model, test[i] ≤ γc[i] + γt[i])
-			else
-				println(typeof(test[i]))
-				println(typeof( γc[i]))
-				println(test[i] ≤ γc[i])
-				#@constraint(model, (γA' * λ_full)[i] ≤ γc[i]) # suppose to be true
-			end
+		prod1 = value.(γA' * λ_full)
+		
+		for i in γa1
+			@constraint(model, prod1[i] ≤ γc[i] + γt[i])
+			#@constraint(model, (γA' * λ_full)[i] ≤ γc[i]) # Is true for i not in γa1
 		end
 		println("γ(A)' * λ~ <= γ(c) + γ(t)")
 		

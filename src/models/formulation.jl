@@ -115,7 +115,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
     model = Model(() -> Gurobi.Optimizer(current_env())) # NetPricing.
     set_optimizer_attribute(model, MOI.Silent(), silent)
     set_optimizer_attribute(model, MOI.NumberOfThreads(), threads)
-
+	println(rtrans)
     prob = problem(first(forms))
 
     # Big M
@@ -158,7 +158,8 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		@variable(model, 0 ≤ t[a=a1], upper_bound = U[a1dict[a]])
 		N = U
 		#println("option 5")
-	elseif (option == 6) && (rtrans != nothing) && (trans != nothing)
+	end
+	if (option == 6) && (rtrans != nothing) && (trans != nothing)
 	
 		vtrans = trans["V"]# Vertex transformation (before:after)
 		etrans = trans["A"]# Edge transformation (before:after)

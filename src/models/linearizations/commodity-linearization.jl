@@ -159,12 +159,13 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		println("x_")
 		x_full = expand_b(rtrans.Amap[k_], na_, x_)       # optimal solution path in transformed problem 
 		println("x_full")
-		# γ(A)' * λ~ <= γ(c) + γ(t)
+		
 		@constraint(model, γA' * λ_full .≤ γc + γt)
-		# (c + t)' * x <= b' * γ^-1(λ~)
+		println("γ(A)' * λ~ <= γ(c) + γ(t)")
 		@constraint(model, c' * x + sumtx ≤ b' * γ_inv_λ_full)
-		# (γ(c) + γ(t))' * x~ <= γ(b)' * λ~
+		println("(c + t)' * x <= b' * γ^-1(λ~)"
 		@constraint(model, (γc + γt)' * x_full ≤ γbfull' * λ_full)
+		println("(γ(c) + γ(t))' * x~ <= γ(b)' * λ~")
 	end
     
 

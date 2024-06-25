@@ -190,7 +190,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		γa1dict = Dict() # mapping entre indices et classes d'équivalences d'indice
 		for e in trans["RA"]
 			if !isempty(intersect(e, a1))
-				
+				println(e[1])
 				i = etrans[e[1]]
 				append!(γa1, i)
 				γa1dict[i] = e

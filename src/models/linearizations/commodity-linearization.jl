@@ -137,7 +137,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
  	if γbfull in ktrans                 # it is possible that the problem become infeasible in the transformed space
  				
 		k_ = ktrans[projection(vtrans, bfull)]               # retrieve the associated transformed problem
-		λ_ = rtrans.λvals[k_]                              # Reduce dual value in transformed space with the corresponding problem
+		λ_ = rtrans.λvals[k_]                               # Reduce dual value in transformed space with the corresponding problem
 		λ_full = expand_b(rtrans.Vmap[k_], nv_, λ_)         # Full dimension dual value in transformed space
 		γ_inv_λ_full = retroprojection(vtrans, value.(λ_full)) # Retroprojection of the dual value into the original space
 		
@@ -145,7 +145,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		x_full = expand_b(rtrans.Amap[k_], na_, x_)       # optimal solution path in transformed problem 
 
 		# γ(A)' * λ~ <= γ(c) + γ(t)
-		@constraint(model, γA' * λ_full .≤ γc + (γt))
+		@constraint(model, γA' * λ_full .≤ γc + γt)
 		# (c + t)' * x <= b' * γ^-1(λ~)
 		@constraint(model, c' * x + sumtx ≤ b' * γ_inv_λ_full)
 		# (γ(c) + γ(t))' * x~ <= γ(b)' * λ~

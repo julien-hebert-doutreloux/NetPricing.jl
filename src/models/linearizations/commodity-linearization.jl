@@ -111,7 +111,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
     x = primal.x[a1]
     tx = @variable(model, [a=a1], lower_bound = 0, base_name="tx[$k]")
     t = remap_t(model, prob)
-
+	println(x)
     if isempty(tx)
         sumtx = 0.0
     else

@@ -191,7 +191,6 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		for e in trans["RA"]
 			if !isempty(intersect(e, a1))
 				i = etrans[e[1]]
-				println(i)
 				append!(γa1, i)
 				γa1dict[i] = e
 			end
@@ -199,10 +198,12 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		println("γa1dict")
 		
 		# variable artificiel γt
-		@variable(model, γt[a=γa1], base_name="γt") # pas besoin de borner voir les contraintes
+		@variable(model, γt[γa=γa1], base_name="γt") # pas besoin de borner voir les contraintes
 		for (k, v) in γa1dict
+			println(k,v)
 			@constraint(model, γt[k] == mean(t[v]))
 		end
+		println("γt")
 				
 		# γ(A), λ~, γ(c), c, b, γ^-1(λ~), x~, γ(b) sont des constantes
 		# γ(A)' * λ~ <= γ(c) + γ(t) need linearize_commodity_primal_custom

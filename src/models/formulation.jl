@@ -159,6 +159,8 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		N = U
 		#println("option 5")
 	elseif option == 6 && rtrans != nothing && trans != nothing
+		vtrans = trans["V"]# Vertex transformation (before:after)
+		etrans = trans["A"]# Edge transformation (before:after)
 		
 		c  = cost_vector(prob)      # constant cost vector from the original problem
 		γc = projection(etrans, c)  # Projection of c in transformed space
@@ -170,10 +172,6 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		na_ = size(γA)[2]   # number of arcs in the transformed space
 		###############
 		
-		# in kwargs		
-		vtrans = trans["V"]# Vertex transformation (before:after)
-		etrans = trans["A"]# Edge transformation (before:after)
-		#rtrans # result from a transformed problem
 
 		ktrans = Dict()     # mapping between full b~ and its associated index k (b~:after)
 		# Only works for result in transformed space (when x is in the id)

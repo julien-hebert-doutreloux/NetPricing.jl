@@ -113,7 +113,6 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 
     if isempty(tx)
         sumtx = 0.0
-        println("HEWRE1")
     else
         sumtx = sum(tx)
     end

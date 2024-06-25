@@ -162,7 +162,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		
 
 		
-		println("typeof, size λ_full      \t", typeof(λ_full), "\t "size(λ_full))
+		println("typeof, size λ_full      \t", typeof(λ_full), "\t", size(λ_full))
 		println("typeof, size γA          \t", typeof(γA), "\t", size(γA))
 		println("typeof, size c           \t", typeof(c), "\t", size(c))
 		println("typeof, size γc          \t", typeof(γc), "\t", size(γc))

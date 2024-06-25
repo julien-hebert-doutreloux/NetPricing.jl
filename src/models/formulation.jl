@@ -183,7 +183,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		for (k, v) in rtrans.b
 			VV = rtrans.Vmap[k]
 			bfull = expand_b(VV, nv_, v) 
-			ktrans[bfull] = k
+			ktrans[value.(bfull)] = k
 		end
 		println(ktrans)
 		println("ktrans")

@@ -168,7 +168,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		γc = projection(etrans, c)  # Projection of c in transformed space
 				
 		γA = trans["M_"]    # incidence matrix in transformed space
-		γA = hcat(γA_...)'   # convert in a matrix (vertex, edge)
+		γA = hcat(γA...)'   # convert in a matrix (vertex, edge)
 
 		nv_ = size(γA)[1]   # number of node in the transformed space
 		na_ = size(γA)[2]   # number of arcs in the transformed space

@@ -157,7 +157,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		@constraint(model, c' * x + sumtx ≤ b' * γ_inv_λ_full)
 		# (γ(c) + γ(t))' * x~ <= γ(b)' * λ~
 		@constraint(model, (γc + γt)' *  x_full ≤ γbfull' * λ_full)
-		
+	end
     
 
     # Run linearization-specific code

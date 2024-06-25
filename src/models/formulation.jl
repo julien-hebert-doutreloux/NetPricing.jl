@@ -166,7 +166,9 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		
 		c  = cost_vector(prob)      # constant cost vector from the original problem
 		γc = projection(etrans, c)  # Projection of c in transformed space
-				
+		println("γc")
+		
+		
 		γA = trans["M_"]    # incidence matrix in transformed space
 		γA = hcat(γA...)'   # convert in a matrix (vertex, edge)
 
@@ -182,6 +184,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 			bfull = expand_b(VV, nv_, v) 
 			ktrans[bfull] = k
 		end
+		println("ktrans")
 
 		γa1 = []         # tolled edge index in the transformed space
 		γa1dict = Dict() # mapping entre indices et classes d'équivalences d'indice
@@ -192,6 +195,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 				γa1dict[i] = e
 			end
 		end
+		println("γa1dict")
 		
 		# variable artificiel γt
 		@variable(model, γt[a=γa1], base_name="γt") # pas besoin de borner voir les contraintes

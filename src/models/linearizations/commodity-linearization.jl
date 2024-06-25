@@ -106,6 +106,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
     k = index(prob)
     Amap = arcmap(prob)
 	Vmap = used_nodes(prob)
+	println("Vmap")
 	
     x = primal.x[a1]
     tx = @variable(model, [a=a1], lower_bound = 0, base_name="tx[$k]")
@@ -129,7 +130,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
     #########################################################
 
 	
-    b = sourcesink_vector(prob)			# Source sink vector 
+    b = NetPricing.sourcesink_vector(prob)			# Source sink vector 
     nv = length(nodes(prob))			# number of nodes
  	bfull = expand_b(Vmap, nv, b)		# Source sink vector in full dimension
  	println("bfull")

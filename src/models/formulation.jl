@@ -158,7 +158,8 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		@variable(model, 0 ≤ t[a=a1], upper_bound = U[a1dict[a]])
 		N = U
 		#println("option 5")
-	elseif option == 6 && rtrans != nothing && trans != nothing
+	elseif (option == 6) && (rtrans != nothing) && (trans != nothing)
+	
 		vtrans = trans["V"]# Vertex transformation (before:after)
 		etrans = trans["A"]# Edge transformation (before:after)
 		

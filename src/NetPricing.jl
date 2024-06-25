@@ -83,6 +83,11 @@ include("misc/default.jl")
 
 include("benchmark.jl")
 
+include("misc/gamma.jl")
+export expand_b, retroprojection, projection
+
+
+
 export AbstractProblem, AbstractCommodityProblem, Problem, AbstractPreprocessedProblem, PreprocessedProblem, PathPreprocessedProblem, UnprocessedProblem, ProblemArc, Commodity
 export read_problem, nodes, arcs, arcmap, paths, tolled_arcs, tollfree_arcs, srcdst_to_index, srcdst_to_cost, tolled_srcdst_to_index
 export used_nodes, used_arcs

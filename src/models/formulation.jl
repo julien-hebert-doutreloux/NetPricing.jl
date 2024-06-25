@@ -115,7 +115,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
     model = Model(() -> Gurobi.Optimizer(current_env())) # NetPricing.
     set_optimizer_attribute(model, MOI.Silent(), silent)
     set_optimizer_attribute(model, MOI.NumberOfThreads(), threads)
-	println(rtrans)
+    
     prob = problem(first(forms))
 
     # Big M

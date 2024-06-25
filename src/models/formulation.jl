@@ -158,7 +158,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		@variable(model, 0 ≤ t[a=a1], upper_bound = U[a1dict[a]])
 		N = U
 		#println("option 5")
-	elseif option == 6 & rtrans != nothing & trans != nothing
+	elseif option == 6 && rtrans != nothing && trans != nothing
 		
 		c  = cost_vector(prob)      # constant cost vector from the original problem
 		γc = projection(etrans, c)  # Projection of c in transformed space

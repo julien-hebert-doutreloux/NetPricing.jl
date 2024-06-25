@@ -113,6 +113,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 
     if isempty(tx)
         sumtx = 0.0
+        println("HEWRE1")
     else
         sumtx = sum(tx)
     end
@@ -149,7 +150,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		# (c + t)' * x <= b' * γ^-1(λ~)
 		@constraint(model, c' * x + sumtx ≤ b' * γ_inv_λ_full)
 		# (γ(c) + γ(t))' * x~ <= γ(b)' * λ~
-		@constraint(model, (γc + γt)' *  x_full ≤ γbfull' * λ_full)
+		@constraint(model, (γc + γt)' * x_full ≤ γbfull' * λ_full)
 	end
     
 

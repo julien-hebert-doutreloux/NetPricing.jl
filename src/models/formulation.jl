@@ -200,8 +200,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		# variable artificiel γt
 		@variable(model, γt[γa=γa1], base_name="γt") # pas besoin de borner voir les contraintes
 		for (k, v) in γa1dict
-			println(k,v)
-			@constraint(model, γt[k] == mean(t[v]))
+			@constraint(model, γt[k] == mean(t[collect(v)]))
 		end
 		println("γt")
 				

@@ -105,7 +105,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
     a1 = tolled_arcs(prob)
     k = index(prob)
     Amap = arcmap(prob)
-	Vmap = nodemap(prob)
+	Vmap = used_nodes(prob)
 	
     x = primal.x[a1]
     tx = @variable(model, [a=a1], lower_bound = 0, base_name="tx[$k]")

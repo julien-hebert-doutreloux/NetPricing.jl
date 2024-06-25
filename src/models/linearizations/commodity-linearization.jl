@@ -178,8 +178,8 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 				println(i, test[i], γc[i], γt[i])
 				@constraint(model, test[i] ≤ γc[i] + γt[i])
 			else
-				println(type(test[i]))
-				println(type( γc[i]))
+				println(typeof(test[i]))
+				println(typeof( γc[i]))
 				println(test[i] ≤ γc[i])
 				#@constraint(model, (γA' * λ_full)[i] ≤ γc[i]) # suppose to be true
 			end

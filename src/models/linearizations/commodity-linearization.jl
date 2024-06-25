@@ -172,7 +172,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		println("size(γ_inv_λ_full)\t", size(γ_inv_λ_full))
 		println("size(γbfull)\t", size(γbfull))
 
-		test = γA' * λ_full
+		test = value.(γA' * λ_full)
 		println(test)
 		for i in range(1, na_)
 			if i in γa1

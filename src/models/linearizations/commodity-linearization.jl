@@ -132,9 +132,18 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
     b = sourcesink_vector(prob)			# Source sink vector 
     nv = length(nodes(prob))			# number of nodes
  	bfull = expand_b(Vmap, nv, b)		# Source sink vector in full dimension
- 	γbfull = projection(vtrans, bfull)	# Projected Source sink vector full dimension
+ 	println("bfull")
+ 	γbfull_min, γbfull_avg, γbfull_max   = projection(vtrans, bfull)	# Projected Source sink vector full dimension
+ 	println("projection")
  	
- 	if γbfull in ktrans                 # it is possible that the problem become infeasible in the transformed space
+ 	# To verify if the projected problem is feasible
+ 	if γbfull_min == γbfull_max
+ 		γbfull = γbfull_min
+ 	else
+ 		γbfull = false
+ 	end
+ 	
+ 	if γbfull in ktrans              # it is possible that the problem become infeasible in the transformed space
  				
 		k_ = ktrans[projection(vtrans, bfull)]               # retrieve the associated transformed problem
 		λ_ = rtrans.λvals[k_]                               # Reduce dual value in transformed space with the corresponding problem

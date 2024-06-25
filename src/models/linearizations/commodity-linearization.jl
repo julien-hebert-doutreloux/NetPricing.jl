@@ -82,22 +82,22 @@ function linearize_commodity_extra(::EnvelopOnly, ::PrimalRepresentation) end
 ########################## CUSTOM
 
 #### Custom
-function custom_linearize!(model::Model, linearization::CommodityLinearization, forms, Ms, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1; sdtol=1e-10)
+function custom_linearize!(model::Model, linearization::CommodityLinearization, forms, Ms, N, rtrans, vtrans, ktrans, nv, nv_, na_, γc, γA, γt, γa1; sdtol=1e-10)
     for (form, M) in zip(forms, Ms)
-        custom_linearize_commodity!(model, linearization, form, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1; sdtol=sdtol)
+        custom_linearize_commodity!(model, linearization, form, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, γc, γA, γt, γa1; sdtol=sdtol)
     end
     return
 end
 
-function custom_linearize_commodity!(model::Model, linearization::CommodityLinearization, form::Formulation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1; sdtol=1e-10)
+function custom_linearize_commodity!(model::Model, linearization::CommodityLinearization, form::Formulation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, γc, γA, γt, γa1; sdtol=1e-10)
     # Linearization
-    sumtx = custom_linearize_commodity_primal(model, linearization, primal(form), M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1)
+    sumtx = custom_linearize_commodity_primal(model, linearization, primal(form), M, N, rtrans, vtrans, ktrans, nv, nv_, na_, γc, γA, γt, γa1)
     # Strong duality
     @constraint(model, sumtx <= unnormalized_objective_term(form) + sdtol)
     return sumtx
 end
 
-function custom_linearize_commodity_primal(model::Model, linearization::CommodityLinearization, primal::PrimalRepresentation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt, γa1)
+function custom_linearize_commodity_primal(model::Model, linearization::CommodityLinearization, primal::PrimalRepresentation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, γc, γA, γt, γa1)
 
     prob = problem(primal)
     parentprob = parent(prob)
@@ -131,6 +131,8 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 
 	
     b = NetPricing.sourcesink_vector(prob)			# Source sink vector 
+    c = cost_vector(prob)
+    y = primal.x
     
  	bfull = expand_b(Vmap, nv, b)		# Source sink vector in full dimension
  	println("bfull")
@@ -167,12 +169,15 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		println("typeof, size c           \t", typeof(c), "\t", size(c))
 		println("typeof, size γc          \t", typeof(γc), "\t", size(γc))
 		println("typeof, size γt          \t", typeof(γt), "\t", size(γt))
-		println("typeof, size x           \t", typeof(primal.x), "\t", size(primal.x))
+		println("typeof, size x           \t", typeof(y), "\t", size(y))
 		println("typeof, size b           \t", typeof(b), "\t", size(b))
 		println("typeof, size γ_inv_λ_full\t", typeof(γ_inv_λ_full), "\t", size(γ_inv_λ_full))
 		println("typeof, size γbfull      \t", typeof(γbfull), "\t", size(γbfull))
-		println("x\t", primal.x)
+		println("x\t", y)
+		
 		prod1 = value.(γA' * λ_full)
+		prod2 = γc' * x_full
+		
 		
 		for i in γa1
 			@constraint(model, prod1[i] ≤ γc[i] + γt[i])
@@ -180,10 +185,11 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		end
 		println("γ(A)' * λ~ <= γ(c) + γ(t)")
 		
-		@constraint(model, c' * x + sumtx ≤ b' * γ_inv_λ_full)
+		@constraint(model, c' * y + sumtx ≤ b' * γ_inv_λ_full)
 		println("(c + t)' * x <= b' * γ^-1(λ~)")
 		
-		@constraint(model, (γc + γt)' * x_full ≤ γbfull' * λ_full)
+	
+		@constraint(model,  prod2 + γt[i]' * x_full[γa1] ≤ γbfull' * λ_full)
 		println("(γ(c) + γ(t))' * x~ <= γ(b)' * λ~")
 	end
     

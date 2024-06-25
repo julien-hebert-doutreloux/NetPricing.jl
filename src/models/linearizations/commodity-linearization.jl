@@ -84,14 +84,14 @@ function linearize_commodity_extra(::EnvelopOnly, ::PrimalRepresentation) end
 #### Custom
 function custom_linearize!(model::Model, linearization::CommodityLinearization, forms, Ms, N, rtrans, vtrans, ktrans, nv_,na_, c, γc, γA, γt; sdtol=1e-10)
     for (form, M) in zip(forms, Ms)
-        custom_linearize_commodity!(model, linearization, form, M, N, rtrans, vtrans, ktrans, γa1dict, nv_,na_, c, γc, γA, γa1; sdtol=sdtol)
+        custom_linearize_commodity!(model, linearization, form, M, N, rtrans, vtrans, ktrans, nv_,na_, c, γc, γA, γa1; sdtol=sdtol)
     end
     return
 end
 
 function custom_linearize_commodity!(model::Model, linearization::CommodityLinearization, form::Formulation, M, N, rtrans, vtrans, ktrans, nv_,na_, c, γc, γA, γt; sdtol=1e-10)
     # Linearization
-    sumtx = custom_linearize_commodity_primal(model, linearization, primal(form), M, N, rtrans, vtrans, ktrans, γa1dict, nv_,na_, c, γc, γA, γa1)
+    sumtx = custom_linearize_commodity_primal(model, linearization, primal(form), M, N, rtrans, vtrans, ktrans, nv_,na_, c, γc, γA, γa1)
     # Strong duality
     @constraint(model, sumtx <= unnormalized_objective_term(form) + sdtol)
     return sumtx

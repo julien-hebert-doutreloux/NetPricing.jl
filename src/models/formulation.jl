@@ -192,7 +192,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 			if !isempty(intersect(e, a1))
 				i = etrans[e[1]]
 				append!(γa1, i)
-				γa1dict[i] = e
+				γa1dict[i] = collect(e)
 			end
 		end
 		println("γa1dict")
@@ -200,7 +200,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		# variable artificiel γt
 		@variable(model, γt[γa=γa1], base_name="γt") # pas besoin de borner voir les contraintes
 		for (k, v) in γa1dict
-			@constraint(model, γt[k] == mean(t[collect(v)]))
+			@constraint(model, γt[k] == mean(t[v]))
 		end
 		println("γt")
 				

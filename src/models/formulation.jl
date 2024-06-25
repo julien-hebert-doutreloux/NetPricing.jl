@@ -126,7 +126,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
     a1 = tolled_arcs(prob)
     a1dict = Dict(a => i for (i, a) in enumerate(a1))
     
-    if option == 0
+    if option == 0 || option == 6
 		# normal
 		@variable(model, 0 ≤ t[a=a1], upper_bound = NU[a1dict[a]])
 		N = NU
@@ -191,6 +191,12 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 				append!(γa1, i)
 				γa1dict[i] = e
 			end
+		end
+		
+		# variable artificiel γt
+		@variable(model, γt[a=γa1], base_name="γt") # pas besoin de borner voir les contraintes
+		for (k, v) in γa1dict
+			@constraint(model, γt[k] == mean(t[v]))
 		end
 				
 		# γ(A), λ~, γ(c), c, b, γ^-1(λ~), x~, γ(b) sont des constantes

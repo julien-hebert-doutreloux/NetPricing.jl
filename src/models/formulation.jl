@@ -159,6 +159,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		N = U
 		#println("option 5")
 	end
+	
 	if (option == 6) && (rtrans != nothing) && (trans != nothing)
 	
 		vtrans = trans["V"]# Vertex transformation (before:after)
@@ -167,7 +168,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 		c  = cost_vector(prob)      # constant cost vector from the original problem
 		γc_min, γc_avg, γc_max  = projection(etrans, c)  # Projection of c in transformed space
 		γc = γc_min
-		println("γc")
+		#println("γc")
 		
 		
 		γA = trans["M_"]    # incidence matrix in transformed space
@@ -186,8 +187,8 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 			bfull = expand_b(VV, nv_, v) 
 			ktrans[value.(bfull)] = k
 		end
-		println(ktrans)
-		println("ktrans")
+		#println(ktrans)
+		#println("ktrans")
 
 		γa1 = []         # tolled edge index in the transformed space
 		γa1dict = Dict() # mapping entre indices et classes d'équivalences d'indice
@@ -198,14 +199,14 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 				γa1dict[i] = collect(e)
 			end
 		end
-		println("γa1dict")
+		#println("γa1dict")
 		
 		# variable artificiel γt
-		@variable(model, γt[γa=γa1], base_name="γt") # pas besoin de borner voir les contraintes
+		@variable(model, 0≤γt[γa=γa1], base_name="γt")
 		for (k, v) in γa1dict
 			@constraint(model, γt[k] == mean(t[v]))
 		end
-		println("γt")
+		#println("γt")
 				
 		# γ(A), λ~, γ(c), c, b, γ^-1(λ~), x~, γ(b) sont des constantes
 		# γ(A)' * λ~ <= γ(c) + γ(t) need linearize_commodity_primal_custom
@@ -218,9 +219,10 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
         append!(model, form; kwargs...)
     end
 
-	if option==6
-		custom_linearize!(model, linearization, forms, Ms, N, rtrans, vtrans, ktrans, nv, nv_, na_, c, γc, γA, γt,γa1; sdtol=sdtol)
-		print("custom_linearize")
+	if option == 6
+		#println("OP6")
+		custom_linearize!(model, linearization, forms, Ms, N, rtrans, vtrans, ktrans, nv, nv_, na_, γc, γA, γt, γa1; sdtol=sdtol)
+		#println("custom_linearize")
 	else
 		# Linearize (and strong duality)
 		linearize!(model, linearization, forms, Ms, N; sdtol=sdtol) #NetPricing.
@@ -229,7 +231,7 @@ function custom_formulate!(forms::Vector{<:Formulation}, linearization::Abstract
 	
     # Set objective function
     @objective(model, Max, sum(objective_term.(forms))) # NetPricing.
-
+    	
     return model, forms
 end
 

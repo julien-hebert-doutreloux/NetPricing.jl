@@ -91,18 +91,13 @@ function custom_linearize!(model::Model, linearization::CommodityLinearization, 
 end
 
 function custom_linearize_commodity!(model::Model, linearization::CommodityLinearization, form::Formulation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, γc, γA, γt, γa1; sdtol=1e-10)
-    #println("START custom_linearize_commodity")
     # Linearization
     sumtx = custom_linearize_commodity_primal(model, linearization, primal(form), form, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, γc, γA, γt, γa1)
-    
     # Strong duality in custom_linearize_commodity_primal
-    #@constraint(model, sumtx <= unnormalized_objective_term(form) + sdtol)
-    
     return sumtx
 end
 
 function custom_linearize_commodity_primal(model::Model, linearization::CommodityLinearization, primal::PrimalRepresentation, form::Formulation, M, N, rtrans, vtrans, ktrans, nv, nv_, na_, γc, γA, γt, γa1; sdtol=1e-10)
-	#println("START custom_linearize_commodity_primal")
     prob = problem(primal)
     parentprob = parent(prob)
 
@@ -139,6 +134,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
     
  	bfull = expand_b(Vmap, nv, b)		# Source sink vector in full dimension
  	#println("bfull")
+ 	
  	γbfull_min, γbfull_avg, γbfull_max   = projection(vtrans, bfull)	# Projected Source sink vector full dimension
  	
  	# To verify if the projected problem is feasible
@@ -168,7 +164,7 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		x_full = expand_b(rtrans.Amap[k_], na_, x_)             # optimal solution path in transformed problem 
 		#println("x_full")
 		
-
+		# For debug
 		#println("typeof, size b           \t", typeof(b), "\t", size(b))
 		#println("typeof, size c           \t", typeof(c), "\t", size(c))
 		#println("typeof, size y           \t", typeof(y), "\t", size(y))
@@ -195,10 +191,8 @@ function custom_linearize_commodity_primal(model::Model, linearization::Commodit
 		#println(prod1[γa1])
 		#println(γc[γa1])
 		
-		#for i in γa1
 		@constraint(model, mean(prod1[γa1]) ≤ mean(γc[γa1]) + mean(γt))
 		#@constraint(model, (γA' * λ_full)[i] ≤ γc[i]) # Is true for i not in γa1
-		#end
 		#println("γ(A)' * λ~ <= γ(c) + γ(t)")
 		
 		@constraint(model, c' * y + sumtx ≤ bfull' * γ_inv_λ_full)
